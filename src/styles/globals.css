@@ -25,3 +25,16 @@ body {
     text-wrap: balance;
   }
 }
+
+.stdInt{
+  transition-duration: 75ms;
+}
+
+.stdInt:hover{
+  transform: scale(1.05);
+}
+
+.stdInt:active{
+  transform: scale(0.97);
+
+}

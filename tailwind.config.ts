@@ -14,13 +14,8 @@ const config: Config = {
       xl: "1280px",
       "2xl": "1792px",
     },
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-      },
-    },
   },
+  darkMode: "class",
   plugins: [],
 };
 export default config;
