@@ -4,13 +4,13 @@ import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import DailyExpense from "./DailyExpense";
 
 interface CalendarProps {
-    year: number;
+    chosenYear: number;
     yearData: MonthlyExpenses;
     setYearData: Dispatch<SetStateAction<MonthlyExpenses | null>>;
 }
 
-export default function Calendar({ year, yearData, setYearData }: CalendarProps) {
-    const [totalExpenseSum, setTotalExpenseSum] = useState<number>(0);
+export default function Calendar({ chosenYear, yearData, setYearData }: CalendarProps) {
+    let setTotalExpenseSum = 0
     const [monthData, setMonthData] = useState<DailyExpenses | null>()
     const [chosenMonth, setChosenMonth] = useState<number>(0)
     const monthNames = [
@@ -21,7 +21,7 @@ export default function Calendar({ year, yearData, setYearData }: CalendarProps)
 
     useEffect(() => {
         const total = getTotalExpenseSum();
-        setTotalExpenseSum(total);
+        setTotalExpenseSum = total;
     }, [yearData]);
 
     function getTotalExpenseSum() {
@@ -36,9 +36,8 @@ export default function Calendar({ year, yearData, setYearData }: CalendarProps)
         return total;
     }
 
-    function selectMonth(expenses: DailyExpenses, month: string) {
-
-        setChosenMonth(Number(month))
+    function selectMonth(expenses: DailyExpenses, month: number) {
+        setChosenMonth(month)
         setMonthData(expenses)
     }
 
@@ -53,27 +52,36 @@ export default function Calendar({ year, yearData, setYearData }: CalendarProps)
     }
 
     return (
-        <div className='w-screen h-screen text-blue-400 border border-black'>
-            {monthData ? <DailyExpense chosenYear={year} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
+        <div className={`w-screen h-screen text-white border border-black ${themeSmooth}`}>
+            {monthData ? <DailyExpense chosenYear={chosenYear} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
                 <>
-                    <header className={`bg-gray-900 dark:bg-blue-900 h-10 flex items-center justify-between px-3 ${themeSmooth}`}>
+                    <header className={`h-10 flex items-center justify-between px-3 bg-blue-600 dark:bg-blue-800 shadow-md ${themeSmooth} z-10`}>
                         <button onClick={() => setYearData(null)}>
-                            <GoArrowLeft className="w-7 h-7" />
+                            <GoArrowLeft className="size-8" />
                         </button>
-                        <span className="font-black text-xl">{year}</span>
+                        <span className="font-black text-xl">{chosenYear}</span>
                     </header>
                     <div className="w-full h-full flex items-center justify-center">
-                        <ul className={`h-full w-fit grid grid-cols-3 justify-items-center content-center gap-2 text-white dark:text-black ${themeSmooth}`}>
-                            {Object.entries(yearData).map(([month, expenses]) => (
-                                <button onClick={() => selectMonth(expenses, month)} key={month} className={`${Number(getMonthExpenseSum(expenses).toFixed(2)) > 100 ? "from-red-600 to-red-900" : Number(getMonthExpenseSum(expenses).toFixed(2)) > 50 ? "from-yellow-400 to-yellow-600" : "from-blue-600 to-blue-800 "} min-w-28 flex flex-col items-center bg-gradient-to-tr p-2 rounded stdInt font-semibold`}>
-                                    <span>{monthNames[Number(month)]}</span>
-                                    <span>{getMonthExpenseSum(expenses).toFixed(2)} zł</span>
-                                </button>
-                            ))}
+                        <ul className={`h-full w-fit grid grid-cols-3 justify-items-center content-center gap-2 text-white dark:text-white transition-colors duration-75`}>
+                            {monthNames.map((monthName, index) => {
+                                const expenses = yearData[index] || {};
+                                const monthTotal = getMonthExpenseSum(expenses);
+                                return (
+                                    <button
+                                        onClick={() => selectMonth(expenses, index)}
+                                        key={index}
+                                        className={`${monthTotal > 100 ? "from-red-600 to-red-900" : monthTotal > 50 ? "from-yellow-400 to-yellow-600" : monthTotal > 19 ? "from-green-500 to-green-700": "from-blue-500 to-blue-700"} min-w-24 text-sm flex flex-col items-center bg-gradient-to-tr p-2 rounded stdInt shadow-[1px_3px_4px_1px_rgba(200,200,250,0.9)] dark:shadow-[1px_4px_5px_1px_rgba(20,20,20,0.5)] bg-blue-400 ${themeSmooth}`}
+                                    >
+                                        <span className="font-semibold">{monthName}</span>
+                                        <span className="font-black">{monthTotal.toFixed(2)} zł</span>
+                                    </button>
+                                );
+                            })}
                         </ul>
                     </div>
                 </>
             }
         </div>
     );
+
 }

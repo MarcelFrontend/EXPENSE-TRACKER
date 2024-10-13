@@ -14,6 +14,15 @@ const config: Config = {
       xl: "1280px",
       "2xl": "1792px",
     },
+    extend: {
+      backgroundSize: {
+        'size-200': '200% 200%',
+      },
+      backgroundPosition: {
+        'pos-0': '0% 0%',
+        'pos-100': '100% 100%',
+      },
+    },
   },
   darkMode: "class",
   plugins: [],

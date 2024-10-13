@@ -1,296 +1,12 @@
-"use client"
 import Head from "next/head";
 import { ExpenseTrackerData, MonthlyExpenses } from "./types";
-import { GoTrash, GoMoon, GoSun } from 'react-icons/go'
-import { SetStateAction, useEffect, useState } from "react";
+import { GoTrash, GoMoon, GoSun, GoPlus } from 'react-icons/go'
+import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
 import { useTheme } from "next-themes";
 
-const initialData: ExpenseTrackerData = {
-  2024: {
-    0: {
-      1: [
-        { cena: 6.59, produkt: "Co może mieć taką długą kurwa nazwę" },
-        { cena: 3.50, produkt: "Mleko" },
-        { cena: 211.99, produkt: "Masło" },
-      ],
-      2: [
-        { cena: 20.99, produkt: "Mleko" },
-        { cena: 25.99, produkt: "Jogurt" },
-        { cena: 23.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 9.99, produkt: "Ser" },
-        { cena: 1.99, produkt: "Bułki" },
-      ],
-      4: [
-        { cena: 0, produkt: "" },
-        { cena: 0, produkt: "" },
-      ],
-      5: [
-        { cena: 0, produkt: "" },
-      ],
-      6: [
-        { cena: 9.79, produkt: "Jajka" },
-        { cena: 1.50, produkt: "Kawa" },
-      ],
-      7: [
-        { cena: 5.00, produkt: "Cukier" },
-      ],
-      8: [
-        { cena: 7.00, produkt: "Czekolada" },
-      ]
-    },
-    1: {
-      1: [
-        { cena: 8.59, produkt: "Jajka" },
-        { cena: 3.00, produkt: "Mleko" },
-      ],
-      2: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 0, produkt: "" },
-        { cena: 2.99, produkt: "Chipsy" },
-      ],
-      4: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.49, produkt: "Batony" },
-      ],
-    },
-    2: {
-      1: [
-        { cena: 100, produkt: "Nwm" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-        { cena: 2.00, produkt: "Chleb" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-        { cena: 0.99, produkt: "Banany" },
-      ],
-      4: [
-        { cena: 3.45, produkt: "Płatki" },
-      ],
-    },
-    3: {
-      1: [
-        { cena: 0, produkt: "" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-      ],
-      4: [
-        { cena: 0.79, produkt: "Ciastka" },
-      ],
-      7: [
-        { cena: 3.50, produkt: "Czipsy" },
-      ],
-    },
-    4: {
-      1: [
-        { cena: 6.59, produkt: "Co może mieć taką długą kurwa nazwę" },
-        { cena: 3.50, produkt: "Mleko" },
-        { cena: 2.99, produkt: "Masło" },
-      ],
-      2: [
-        { cena: 10.89, produkt: "Mleko" },
-        { cena: 4.20, produkt: "Jogurt" },
-        { cena: 5.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 9.99, produkt: "Ser" },
-        { cena: 1.99, produkt: "Bułki" },
-      ],
-      4: [
-        { cena: 0, produkt: "" },
-        { cena: 0, produkt: "" },
-      ],
-      5: [
-        { cena: 0, produkt: "" },
-      ],
-      6: [
-        { cena: 9.79, produkt: "Jajka" },
-        { cena: 1.50, produkt: "Kawa" },
-      ],
-      7: [
-        { cena: 5.00, produkt: "Cukier" },
-      ],
-      8: [
-        { cena: 7.00, produkt: "Czekolada" },
-      ]
-    },
-    5: {
-      1: [
-        { cena: 8.59, produkt: "Jajka" },
-        { cena: 3.00, produkt: "Mleko" },
-      ],
-      2: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 0, produkt: "" },
-        { cena: 2.99, produkt: "Chipsy" },
-      ],
-      4: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.49, produkt: "Batony" },
-      ],
-    },
-    6: {
-      1: [
-        { cena: 100, produkt: "Nwm" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-        { cena: 2.00, produkt: "Chleb" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-        { cena: 0.99, produkt: "Banany" },
-      ],
-      4: [
-        { cena: 3.45, produkt: "Płatki" },
-      ],
-    },
-    7: {
-      1: [
-        { cena: 0, produkt: "" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-      ],
-      4: [
-        { cena: 0.79, produkt: "Ciastka" },
-      ],
-      7: [
-        { cena: 3.50, produkt: "Czipsy" },
-      ],
-    },
-    8: {
-      1: [
-        { cena: 6.59, produkt: "Co może mieć taką długą kurwa nazwę" },
-        { cena: 3.50, produkt: "Mleko" },
-        { cena: 2.99, produkt: "Masło" },
-      ],
-      2: [
-        { cena: 10.89, produkt: "Mleko" },
-        { cena: 4.20, produkt: "Jogurt" },
-        { cena: 5.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 9.99, produkt: "Ser" },
-        { cena: 1.99, produkt: "Bułki" },
-      ],
-      4: [
-        { cena: 0, produkt: "" },
-        { cena: 0, produkt: "" },
-      ],
-      5: [
-        { cena: 0, produkt: "" },
-      ],
-      6: [
-        { cena: 9.79, produkt: "Jajka" },
-        { cena: 1.50, produkt: "Kawa" },
-      ],
-      7: [
-        { cena: 5.00, produkt: "Cukier" },
-      ],
-      8: [
-        { cena: 7.00, produkt: "Czekolada" },
-      ]
-    },
-    9: {
-      1: [
-        { cena: 8.59, produkt: "Jajka" },
-        { cena: 3.00, produkt: "Mleko" },
-      ],
-      2: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.99, produkt: "Sok" },
-      ],
-      3: [
-        { cena: 0, produkt: "" },
-        { cena: 2.99, produkt: "Chipsy" },
-      ],
-      4: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.49, produkt: "Batony" },
-      ],
-    },
-    10: {
-      1: [
-        { cena: 100, produkt: "Nwm" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-        { cena: 2.00, produkt: "Chleb" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-        { cena: 0.99, produkt: "Banany" },
-      ],
-      4: [
-        { cena: 3.45, produkt: "Płatki" },
-      ],
-    },
-    11: {
-      1: [
-        { cena: 0, produkt: "" },
-      ],
-      2: [
-        { cena: 1.52, produkt: "Mleko" },
-      ],
-      3: [
-        { cena: 1.89, produkt: "Jabłko" },
-      ],
-      4: [
-        { cena: 0.79, produkt: "Ciastka" },
-      ],
-      7: [
-        { cena: 3.50, produkt: "Czipsy" },
-      ],
-    },
-  },
-  2025: {
-    0: {
-      1: [
-        { cena: 6.59, produkt: "Chleb" },
-        { cena: 4.50, produkt: "Masło" },
-      ],
-      2: [
-        { cena: 10.82, produkt: "Mleko" },
-        { cena: 1.99, produkt: "Serek" },
-      ],
-      3: [
-        { cena: 9.99, produkt: "Ser" },
-        { cena: 5.00, produkt: "Sok" },
-      ],
-    },
-    1: {
-      1: [
-        { cena: 8.59, produkt: "Jajka" },
-        { cena: 3.50, produkt: "Kawa" },
-      ],
-      2: [
-        { cena: 11.29, produkt: "Woda" },
-        { cena: 2.99, produkt: "Czekolada" },
-      ],
-    },
-    2: {}
-  }
-};
 export default function Index() {
-  const [data, setData] = useState<ExpenseTrackerData | null>(null);
+  const [savedData, setSavedData] = useState<ExpenseTrackerData | null>(null);
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [yearData, setYearData] = useState<MonthlyExpenses | null>(null);
   const { systemTheme, theme, setTheme } = useTheme();
@@ -300,20 +16,44 @@ export default function Index() {
     console.clear();
     const storedData = localStorage.getItem("ExpenseTracker");
     if (storedData) {
-      setData(JSON.parse(storedData));
+      setSavedData(JSON.parse(storedData));
     }
   }, []);
 
   function chooseYear(year: string) {
     setSelectedYear(year);
-    if (data) {
-      setYearData(data[Number(year)]);
+    if (savedData) {
+      setYearData(savedData[Number(year)]);
     }
   }
 
   function reload() {
-    localStorage.setItem("ExpenseTracker", JSON.stringify(initialData));
+    localStorage.removeItem("ExpenseTracker");
     window.location.reload()
+  }
+
+  function addNewYear() {
+    const newYear = (Object.keys(savedData || {})).length > 0 ? Math.max(...Object.keys(savedData).map(Number)) + 1 : new Date().getFullYear()
+    const updatedData = {
+      ...savedData,
+      [newYear]: {
+        0: {},
+        1: {},
+        2: {},
+        3: {},
+        4: {},
+        5: {},
+        6: {},
+        7: {},
+        8: {},
+        9: {},
+        10: {},
+        11: {}
+      }
+    };
+
+    localStorage.setItem("ExpenseTracker", JSON.stringify(updatedData))
+    setSavedData(updatedData)
   }
 
   return (
@@ -322,26 +62,33 @@ export default function Index() {
         <title>Expense Tracker</title>
       </Head>
       {yearData ? (
-        <Calendar setYearData={setYearData} year={Number(selectedYear)} yearData={yearData} />
+        <Calendar setYearData={setYearData} chosenYear={Number(selectedYear)} yearData={yearData} />
       ) : (
-        <ul className="flex gap-3">
-          {data && Object.entries(data).map(([year]) => (
-            <li className="bg-gradient-to-tr from-blue-500 to-blue-600 dark:from-purple-400 dark:to-purple-600 rounded-2xl px-3 shadow-md cursor-pointer hover:scale-105 active:scale-95 duration-100" key={year}
-              onClick={() => chooseYear(year)}>
-              {year}
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center flex-col gap-4">
+          <ul className="grid grid-cols-3 gap-3">
+            {savedData && Object.entries(savedData).map(([year]) => (
+              <button className="bg-gradient-to-tr from-blue-500 to-blue-700 dark:from-blue-400 dark:to-blue-800 rounded-2xl px-3 shadow-md stdInt duration-100 text-2xl" key={year}
+                onClick={() => chooseYear(year)}>
+                {year}
+              </button>
+            ))}
+          </ul>
+          <button onClick={addNewYear} className="bg-gradient-to-tr from-blue-500 to-blue-800 shadow-md dark:from-blue-400 dark:to-blue-700 rounded-full stdInt">
+            <GoPlus className="size-10" />
+          </button>
+        </div>
       )}
-      <GoTrash onClick={reload} className="absolute left-0.5 text-red-500 bottom-0.5 w-8 h-8 p-0.5 stdInt" />
+      <button className="absolute left-0.5 text-red-500/50 bottom-0.5">
+        <GoTrash onDoubleClick={reload} className="w-8 h-8 p-0.5 stdInt" />
+      </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="absolute bottom-0.5 right-0.5 transition-colors duration-100"
+        className="absolute bottom-0.5 right-0.5 transition-colors duration-100 stdInt"
       >
         {currentTheme === "dark" ? (
-          <GoSun className="h-7 md:h-9 lg:h-12 w-auto text-blue-300" />
+          <GoSun className="h-12 w-auto text-blue-300" />
         ) : (
-          <GoMoon className="h-7 md:h-9 lg:h-12 w-auto text-blue-600" />
+          <GoMoon className="h-12 w-auto text-blue-900" />
         )}
       </button>
     </div>
