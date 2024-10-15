@@ -57,7 +57,7 @@ export default function Index() {
   }
 
   return (
-    <div className="relative w-screen h-[92vh] sm:h-screen flex items-center justify-center">
+    <div className="relative w-screen h-[93vh] sm:h-screen flex items-center justify-center text-white dark:text-gray-200">
       <Head>
         <title>Expense Tracker</title>
       </Head>
@@ -79,7 +79,7 @@ export default function Index() {
         </div>
       )}
       <button onDoubleClick={() => deleteData()} className="absolute bottom-0">
-        <GoTrash className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full" />
+        <GoTrash className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full p-1" />
       </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -91,7 +91,7 @@ export default function Index() {
           <GoMoon className="h-12 md:h-14 w-auto text-blue-700" />
         )}
       </button>
-      <span className="absolute bottom-0.5 left-1.5 text-gray-500 dark:text-gray-500">
+      <span className="absolute bottom-0.5 left-2 text-gray-500 dark:text-gray-500">
         v1.25</span>
     </div>
   )

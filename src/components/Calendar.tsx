@@ -45,14 +45,14 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
         <div className={`w-screen h-[92vh] sm:h-screen text-white${themeSmooth}`}>
             {monthData ? <DailyExpense chosenYear={chosenYear} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
                 <>
-                    <header className={`h-12 md:h-14 flex items-center justify-between px-3 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 shadow-md ${themeSmooth} z-10`}>
+                    <header className={`h-12 md:h-14 flex items-center justify-between px-3 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 shadow-md ${themeSmooth} z-10 text-white dark:text-gray-200`}>
                         <button onClick={() => setYearData(null)}>
                             <GoArrowLeft className="size-11 md:size-14" />
                         </button>
                         <span className="font-black text-2xl md:text-4xl">{chosenYear}</span>
                     </header>
                     <div className="w-full h-[90%] sm:h-full flex items-center justify-center">
-                        <ul className={`h-full w-fit grid grid-cols-2 sm:grid-cols-3 justify-items-center content-center gap-2 text-white dark:text-white transition-colors duration-75`}>
+                        <ul className={`h-full w-fit grid grid-cols-2 sm:grid-cols-3 justify-items-center content-center gap-2 text-white dark:text-gray-200 transition-colors duration-75`}>
                             {monthNames.map((monthName, index) => {
                                 const expenses = yearData[index] || {};
                                 const monthTotal = getMonthExpenseSum(expenses);
@@ -60,7 +60,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
                                     <button
                                         onClick={() => selectMonth(expenses, index)}
                                         key={index}
-                                        className={`${monthTotal > 100 ? "from-red-600 to-red-900" : monthTotal > 50 ? "from-yellow-400 to-yellow-600" : monthTotal > 19 ? "from-green-500 to-green-700" : "from-blue-500 to-blue-700"} min-w-[7.25rem] md:w-40 flex flex-col items-center p-2 text-lg md:text-2xl bg-gradient-to-tr rounded stdInt shadow-md bg-blue-400 ${themeSmooth}`}>
+                                        className={`${monthTotal > 100 ? "from-red-600 to-red-900" : monthTotal > 50 ? "from-yellow-400 to-yellow-600" : monthTotal > 19 ? "from-green-500 to-green-700" : "from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-900"} min-w-[7.25rem] md:w-40 flex flex-col items-center p-2 text-lg md:text-2xl bg-gradient-to-tr rounded stdInt shadow-md bg-blue-400 ${themeSmooth}`}>
                                         <span className="font-semibold">{monthName}</span>
                                         <span className="font-black">{monthTotal.toFixed(2)} zł</span>
                                     </button>

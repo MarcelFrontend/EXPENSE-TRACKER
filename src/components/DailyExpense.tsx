@@ -68,7 +68,7 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
                             {getDayExpenseSum().map(({ day, total, dayIndex }) => (
                                 <button
                                     onClick={() => chooseDay(day)}
-                                    className={`min-w-14 min-h-14 md:w-[6.25rem] md:h-[6.25rem] text-base flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
+                                    className={`min-w-14 min-h-14 md:w-[6.25rem] md:h-[6.25rem] text-base sm:text-2xl flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
                                     key={day}>
                                     {total ? (
                                         <>
