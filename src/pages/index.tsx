@@ -57,7 +57,7 @@ export default function Index() {
   }
 
   return (
-    <div className="relative w-screen h-[90vh] sm:h-screen flex items-center justify-center">
+    <div className="relative w-screen h-screen flex items-center justify-center">
       <Head>
         <title>Expense Tracker</title>
       </Head>
