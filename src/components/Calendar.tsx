@@ -42,7 +42,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
     }
 
     return (
-        <div className={`w-screen h-screen text-white border border-black ${themeSmooth}`}>
+        <div className={`w-screen h-[92vh] sm:h-screen text-white border border-black ${themeSmooth}`}>
             {monthData ? <DailyExpense chosenYear={chosenYear} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
                 <>
                     <header className={`h-12 md:h-14 flex items-center justify-between px-3 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 shadow-md ${themeSmooth} z-10`}>

@@ -57,7 +57,7 @@ export default function Index() {
   }
 
   return (
-    <div className="relative w-screen h-[95vh] sm:h-screen flex items-center justify-center">
+    <div className="relative w-screen h-[91vh] sm:h-screen flex items-center justify-center">
       <Head>
         <title>Expense Tracker</title>
       </Head>
@@ -92,7 +92,7 @@ export default function Index() {
         )}
       </button>
       <span className="absolute bottom-0 left-0 text-gray-500 dark:text-gray-500">
-        v1.1</span>
+        v1.2</span>
     </div>
   )
 }
