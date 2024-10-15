@@ -27,7 +27,7 @@ export default function Index() {
     }
   }
 
-  function reload() {
+  function deleteData() {
     localStorage.removeItem("ExpenseTracker");
     window.location.reload()
   }
@@ -78,7 +78,7 @@ export default function Index() {
           </button>
         </div>
       )}
-      <button onDoubleClick={() => reload()} className="absolute bottom-0">
+      <button onDoubleClick={() => deleteData()} className="absolute bottom-0">
         <GoTrash className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full" />
       </button>
       <button
