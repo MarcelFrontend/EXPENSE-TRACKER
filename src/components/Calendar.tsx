@@ -1,6 +1,6 @@
 import { GoArrowLeft } from "react-icons/go";
-import { DailyExpenses, MonthlyExpenses } from '@/pages/types';
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { DailyExpenses, MonthlyExpenses } from '@/types/types';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import DailyExpense from "./DailyExpense";
 
 interface CalendarProps {
@@ -17,7 +17,6 @@ interface CalendarProps {
 // Podpowiadanie ceny danego produktu jeśli mamy o nim dane
 
 export default function Calendar({ chosenYear, yearData, setYearData }: CalendarProps) {
-    let setTotalExpenseSum = 0
     const [monthData, setMonthData] = useState<DailyExpenses | null>()
     const [chosenMonth, setChosenMonth] = useState<number>(0)
     const monthNames = [
@@ -26,23 +25,6 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
     ];
     const themeSmooth = "transition-colors duration-700"
 
-    useEffect(() => {
-        const total = getTotalExpenseSum();
-        setTotalExpenseSum = total;
-    }, [yearData]);
-
-    function getTotalExpenseSum() {
-        let total = 0;
-        Object.entries(yearData).forEach(([_, expenses]) => {
-            Object.entries(expenses).forEach(([_, dailyExpenses]) => {
-                dailyExpenses.forEach((expense: { cena: number }) => {
-                    total += expense.cena;
-                });
-            });
-        });
-        return total;
-    }
-
     function selectMonth(expenses: DailyExpenses, month: number) {
         setChosenMonth(month)
         setMonthData(expenses)
@@ -50,7 +32,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
 
     function getMonthExpenseSum(expenses: DailyExpenses) {
         let monthTotal = 0;
-        Object.entries(expenses).forEach(([_, dailyExpenses]) => {
+        Object.entries(expenses).forEach((dailyExpenses) => {
             dailyExpenses.forEach((expense: { cena: number }) => {
                 monthTotal += expense.cena;
             });

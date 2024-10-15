@@ -1,4 +1,4 @@
-import { DailyExpenses, Expense, ExpenseTrackerData, MonthlyExpenses } from "@/pages/types";
+import { DailyExpenses, Expense, ExpenseTrackerData, MonthlyExpenses } from "@/types/types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GoArrowLeft, GoPlus, GoTrash } from "react-icons/go";
 
@@ -155,7 +155,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                         onChange={(e) => shopChange(index, e.target.value)}
                                         value={day.sklep}
                                         placeholder="Sklep"
-                                        className="w-28 md:w-36 outline-none pl-3 py-[1px] placeholder:text-white/75 border bg-blue-900 dark:bg-blue-800 rounded-sm text-xl md:text-2xl"
+                                        className="w-28 md:w-40 outline-none pl-3 py-[1px] placeholder:text-white/75 border bg-blue-900 dark:bg-blue-800 rounded-sm text-xl md:text-2xl"
                                         type="text"
                                         list="shopsSuggestions"
                                     />
@@ -187,7 +187,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                             type="number"
                                             min={0}
                                             value={day.cena || ""}
-                                            className={`${day.cena > 1000 ? "font-black text-red-500 w-[5.5rem] md:w-24" : day.cena > 40 ? "text-red-400 dark:text-red-500 font-black w-[5.75rem] md:w-32" : day.cena > 20 ? "text-yellow-400 w-20" : day.cena > 10 ? "w-20 text-green-400" : " w-12 md:w-16 text-green-400"}  w-16 bg-transparent outline-none pl-1 mr-1 placeholder:text-white`}
+                                            className={`${day.cena > 1000 ? "font-black text-red-400 w-[5.5rem] md:w-24" : day.cena > 40 ? "text-red-400 font-black w-[5.75rem] md:w-32" : day.cena > 20 ? "text-yellow-400 w-20 md:w-28" : day.cena > 10 ? "w-20 text-green-400 md:w-28" : " w-12 md:w-24 text-green-400"} w-16 bg-transparent outline-none pl-1 mr-1 placeholder:text-white`}
                                             placeholder="0.00"
                                         />
                                         zł

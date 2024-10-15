@@ -1,12 +1,12 @@
 import Head from "next/head";
-import { ExpenseTrackerData, MonthlyExpenses } from "./types";
-import { GoTrash, GoMoon, GoSun, GoPlus } from 'react-icons/go'
+import { ExpenseTrackerData, MonthlyExpenses } from "../types/types";
+import { GoMoon, GoSun, GoPlus } from 'react-icons/go'
 import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
 import { useTheme } from "next-themes";
 
 export default function Index() {
-  const [savedData, setSavedData] = useState<ExpenseTrackerData | null>(null);
+  const [savedData, setSavedData] = useState<ExpenseTrackerData>({});
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [yearData, setYearData] = useState<MonthlyExpenses | null>(null);
   const { systemTheme, theme, setTheme } = useTheme();
@@ -27,10 +27,10 @@ export default function Index() {
     }
   }
 
-  function reload() {
-    localStorage.removeItem("ExpenseTracker");
-    window.location.reload()
-  }
+  // function reload() {
+  //   localStorage.removeItem("ExpenseTracker");
+  //   window.location.reload()
+  // }
 
   function addNewYear() {
     const newYear = (Object.keys(savedData || {})).length > 0 ? Math.max(...Object.keys(savedData).map(Number)) + 1 : new Date().getFullYear()

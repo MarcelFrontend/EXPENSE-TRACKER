@@ -1,4 +1,4 @@
-import { DailyExpenses, Expense, MonthlyExpenses } from "@/pages/types";
+import { DailyExpenses, Expense } from "@/types/types";
 import { useEffect, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import DayExpeses from "./DayExpeses";
