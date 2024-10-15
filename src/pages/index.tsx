@@ -67,28 +67,25 @@ export default function Index() {
         <div className="flex items-center flex-col gap-4">
           <ul className="grid grid-cols-3 gap-3">
             {savedData && Object.entries(savedData).map(([year]) => (
-              <button className="bg-gradient-to-tr from-blue-500 to-blue-700 dark:from-blue-400 dark:to-blue-800 rounded-2xl px-3 shadow-md stdInt duration-100 text-2xl" key={year}
+              <button className="bg-gradient-to-tr from-blue-500 to-blue-700 dark:from-blue-500 dark:to-blue-800 rounded-2xl md:rounded-3xl px-3 md:px-4 shadow-md stdInt duration-1000 text-3xl md:text-4xl" key={year}
                 onClick={() => chooseYear(year)}>
                 {year}
               </button>
             ))}
           </ul>
-          <button onClick={addNewYear} className="bg-gradient-to-tr from-blue-500 to-blue-800 shadow-md dark:from-blue-400 dark:to-blue-700 rounded-full stdInt">
-            <GoPlus className="size-10" />
+          <button onClick={addNewYear} className="bg-gradient-to-tr from-blue-500 to-blue-700 shadow-md dark:from-blue-500 dark:to-blue-800 rounded-full stdInt transition-colors duration-1000">
+            <GoPlus className="size-12 md:size-14" />
           </button>
         </div>
       )}
-      <button className="absolute left-0.5 text-red-500/50 bottom-0.5">
-        <GoTrash onDoubleClick={reload} className="w-8 h-8 p-0.5 stdInt" />
-      </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="absolute bottom-0.5 right-0.5 transition-colors duration-100 stdInt"
       >
         {currentTheme === "dark" ? (
-          <GoSun className="h-12 w-auto text-blue-300" />
+          <GoSun className="h-12 md:h-14 w-auto text-blue-300" />
         ) : (
-          <GoMoon className="h-12 w-auto text-blue-900" />
+          <GoMoon className="h-12 md:h-14 w-auto text-blue-700" />
         )}
       </button>
     </div>
