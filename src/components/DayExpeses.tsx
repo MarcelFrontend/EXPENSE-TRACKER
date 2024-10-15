@@ -149,7 +149,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                 <div className="max-w-full max-h-[30rem] sm:max-h-80 overflow-y-auto customScroll">
                     <ul className="flex flex-col gap-6 sm:gap-3 py-1">
                         {selectedDayData?.map((day: Expense, index) => (
-                            <li className="w-[19rem] md:w-[28rem] flex items-start flex-col gap-1 relative overflow-hidden md:group" key={index}>
+                            <li className="w-[17rem] md:w-[28rem] flex items-start flex-col gap-1 relative overflow-hidden md:group" key={index}>
                                 <div>
                                     <input
                                         onChange={(e) => shopChange(index, e.target.value)}
@@ -193,7 +193,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                         zł
                                     </div>
                                 </div>
-                                <button onClick={() => removeSelectedExpense(index)} className="absolute right-3 top-px text-red-600 dark:text-red-500 md:hidden md:group-hover:block">
+                                <button onDoubleClick={() => removeSelectedExpense(index)} className="absolute right-3 top-px text-red-600 dark:text-red-500 md:hidden md:group-hover:block">
                                     <GoTrash className="size-8 md:size-10 stdInt " />
                                 </button>
                             </li>
