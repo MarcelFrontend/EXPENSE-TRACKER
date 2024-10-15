@@ -42,7 +42,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
     }
 
     return (
-        <div className={`w-screen h-screen text-white border border-black ${themeSmooth}`}>
+        <div className={`w-screen h-[85vh] sm:h-screen text-white border border-black ${themeSmooth}`}>
             {monthData ? <DailyExpense chosenYear={chosenYear} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
                 <>
                     <header className={`h-12 md:h-14 flex items-center justify-between px-3 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 shadow-md ${themeSmooth} z-10`}>
@@ -51,7 +51,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
                         </button>
                         <span className="font-black text-2xl md:text-4xl">{chosenYear}</span>
                     </header>
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-full h-[90%] sm:h-full flex items-center justify-center">
                         <ul className={`h-full w-fit grid grid-cols-2 sm:grid-cols-3 justify-items-center content-center gap-2 text-white dark:text-white transition-colors duration-75`}>
                             {monthNames.map((monthName, index) => {
                                 const expenses = yearData[index] || {};
