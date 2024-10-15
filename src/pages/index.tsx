@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { ExpenseTrackerData, MonthlyExpenses } from "../types/types";
-import { GoMoon, GoSun, GoPlus } from 'react-icons/go'
+import { GoTrash, GoMoon, GoSun, GoPlus } from 'react-icons/go'
 import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
 import { useTheme } from "next-themes";
@@ -78,8 +78,8 @@ export default function Index() {
           </button>
         </div>
       )}
-      <button onClick={addNewYear} className="absolute bottom-0">
-        <GoPlus className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full" />
+      <button onDoubleClick={() => reload()} className="absolute bottom-0">
+        <GoTrash className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full" />
       </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
