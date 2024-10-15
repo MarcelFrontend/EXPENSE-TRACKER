@@ -109,7 +109,6 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
         }
     }
 
-
     function getBack() {
         const updatedData = { ...storedData };
         setStoredData(updatedData);
