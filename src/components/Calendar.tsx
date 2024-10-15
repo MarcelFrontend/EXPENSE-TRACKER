@@ -32,7 +32,8 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
 
     function getMonthExpenseSum(expenses: DailyExpenses) {
         let monthTotal = 0;
-        Object.entries(expenses).forEach((dailyExpenses) => {
+        Object.entries(expenses).forEach(([i, dailyExpenses]) => {
+            console.log(i);
             dailyExpenses.forEach((expense: { cena: number }) => {
                 monthTotal += expense.cena;
             });
