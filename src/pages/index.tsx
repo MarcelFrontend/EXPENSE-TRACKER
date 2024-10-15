@@ -57,7 +57,7 @@ export default function Index() {
   }
 
   return (
-    <div className="relative w-screen h-[95vh] sm:h-screen flex items-center justify-center">
+    <div className="relative w-screen h-[92vh] sm:h-screen flex items-center justify-center">
       <Head>
         <title>Expense Tracker</title>
       </Head>
@@ -83,7 +83,7 @@ export default function Index() {
       </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="absolute bottom-2 right-2 transition-colors duration-100 stdInt"
+        className="absolute bottom-0 right-2 transition-colors duration-100 stdInt"
       >
         {currentTheme === "dark" ? (
           <GoSun className="h-12 md:h-14 w-auto text-blue-300" />
@@ -92,7 +92,7 @@ export default function Index() {
         )}
       </button>
       <span className="absolute bottom-0.5 left-1.5 text-gray-500 dark:text-gray-500">
-        v1.2</span>
+        v1.25</span>
     </div>
   )
 }
