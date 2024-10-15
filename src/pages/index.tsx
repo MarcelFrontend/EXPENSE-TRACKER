@@ -57,7 +57,7 @@ export default function Index() {
   }
 
   return (
-    <div className="relative w-screen h-[91vh] sm:h-screen flex items-center justify-center">
+    <div className="relative w-screen h-[93vh] sm:h-screen flex items-center justify-center">
       <Head>
         <title>Expense Tracker</title>
       </Head>
@@ -91,7 +91,7 @@ export default function Index() {
           <GoMoon className="h-12 md:h-14 w-auto text-blue-700" />
         )}
       </button>
-      <span className="absolute bottom-0 left-0 text-gray-500 dark:text-gray-500">
+      <span className="absolute bottom-0.5 left-1.5 text-gray-500 dark:text-gray-500">
         v1.2</span>
     </div>
   )
