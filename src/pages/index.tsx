@@ -80,7 +80,7 @@ export default function Index() {
       )}
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="absolute bottom-0.5 right-0.5 transition-colors duration-100 stdInt"
+        className="absolute bottom-2 right-2 transition-colors duration-100 stdInt"
       >
         {currentTheme === "dark" ? (
           <GoSun className="h-12 md:h-14 w-auto text-blue-300" />

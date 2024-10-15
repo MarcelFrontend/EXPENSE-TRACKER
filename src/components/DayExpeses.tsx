@@ -194,7 +194,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                     </div>
                                 </div>
                                 <button onClick={() => removeSelectedExpense(index)} className="absolute right-3 top-px text-red-600 dark:text-red-500 md:hidden md:group-hover:block">
-                                    <GoTrash className="size-7 stdInt " />
+                                    <GoTrash className="size-8 md:size-10 stdInt " />
                                 </button>
                             </li>
 
