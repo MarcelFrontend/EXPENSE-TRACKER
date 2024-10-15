@@ -146,7 +146,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                 <span className="font-black text-2xl md:text-4xl">{`${chosenYear}>${chosenMonth + 1}>${chosenDay}`}</span>
             </header>
             <div className="h-[90%] sm:h-full flex items-center justify-center flex-col gap-3">
-                <div className="max-w-full max-h-80 overflow-y-auto customScroll">
+                <div className="max-w-full max-h-[30rem] sm:max-h-80 overflow-y-auto customScroll">
                     <ul className="flex flex-col gap-6 sm:gap-3 py-1">
                         {selectedDayData?.map((day: Expense, index) => (
                             <li className="w-[19rem] md:w-[28rem] flex items-start flex-col gap-1 relative overflow-hidden md:group" key={index}>
