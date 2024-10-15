@@ -28,8 +28,12 @@ export default function Index() {
   }
 
   function deleteData() {
-    localStorage.removeItem("ExpenseTracker");
-    window.location.reload()
+    if(confirm("Wyczyścisz wszystkie dane, czy chcesz kontynuować?")){
+      localStorage.removeItem("ExpenseTracker");
+      window.location.reload()
+    }else{
+      alert("Dane zachowano")
+    }
   }
 
   function addNewYear() {
@@ -92,7 +96,7 @@ export default function Index() {
         )}
       </button>
       <span className="absolute bottom-0.5 left-2.5 text-xs text-gray-400 dark:text-gray-600">
-        v1.52</span>
+        v1.63</span>
     </div>
   )
 }

@@ -140,12 +140,12 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
     return (
         <>
             <header className='h-12 md:h-14 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 flex items-center justify-between px-3'>
-                <button onClick={getBack}>
+                <button onClick={() => getBack()}>
                     <GoArrowLeft className="size-11 md:size-14" />
                 </button>
                 <span className="font-black text-2xl md:text-4xl">{`${chosenYear}>${chosenMonth + 1}>${chosenDay}`}</span>
             </header>
-            <div className="relative -top-8 h-full flex items-center justify-center flex-col gap-3">
+            <div className="border h-[85.6%] flex items-center justify-center flex-col gap-3">
                 <div className="max-w-full max-h-[30rem] sm:max-h-80 overflow-y-auto customScroll">
                     <ul className="flex flex-col gap-6 sm:gap-3 py-1">
                         {selectedDayData?.map((day: Expense, index) => (
