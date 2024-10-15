@@ -27,10 +27,10 @@ export default function Index() {
     }
   }
 
-  // function reload() {
-  //   localStorage.removeItem("ExpenseTracker");
-  //   window.location.reload()
-  // }
+  function reload() {
+    localStorage.removeItem("ExpenseTracker");
+    window.location.reload()
+  }
 
   function addNewYear() {
     const newYear = (Object.keys(savedData || {})).length > 0 ? Math.max(...Object.keys(savedData).map(Number)) + 1 : new Date().getFullYear()
@@ -78,6 +78,9 @@ export default function Index() {
           </button>
         </div>
       )}
+      <button onClick={addNewYear} className="absolute bottom-0">
+        <GoPlus className="size-12 md:size-14 text-red-500 dark:text-red-600 border-4 border-black rounded-full" />
+      </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="absolute bottom-2 right-2 transition-colors duration-100 stdInt"
