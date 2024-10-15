@@ -56,7 +56,7 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
     return (
         <>
             {selectedDay !== 0 ? <DayExpeses setSelectedDayData={setSelectedDayData} selectedDayData={selectedDayData} setSelectedDay={setSelectedDay} chosenYear={chosenYear} chosenMonth={chosenMonth} chosenDay={selectedDay} /> :
-                <div className="h-screen">
+                <div className="h-[95vh] sm:h-screen">
                     <header className='h-12 md:h-14 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 flex items-center justify-between px-3'>
                         <button onClick={() => setMonthData(null)}>
                             <GoArrowLeft className="size-11 md:size-14" />
