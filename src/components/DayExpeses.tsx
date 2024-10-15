@@ -155,7 +155,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                         onChange={(e) => shopChange(index, e.target.value)}
                                         value={day.sklep}
                                         placeholder="Sklep"
-                                        className="w-[8.25rem] md:w-40 outline-none pl-3 py-[1px] placeholder:text-white/75 border bg-blue-900 dark:bg-blue-800 rounded-sm text-xl md:text-2xl"
+                                        className="w-[8.25rem] md:w-40 outline-none pl-3 py-[1px] placeholder:text-white/75 border bg-blue-400 dark:bg-blue-800 rounded-sm text-lg md:text-2xl"
                                         type="text"
                                         list="shopsSuggestions"
                                     />
@@ -165,7 +165,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                         ))}
                                     </datalist>
                                 </div>
-                                <div className="w-72 md:w-full relative md:max-w-full flex items-center justify-between gap-2 border-l-2 border-t-2 border-b-2 border-white px-3 rounded-sm text-2xl md:text-4xl overflow-x-hidden bg-blue-800 dark:bg-blue-600">
+                                <div className="w-72 md:w-full relative md:max-w-full flex items-center justify-between gap-2 border-l-2 border-t-2 border-b-2 border-white px-3 rounded-sm text-[22px] md:text-4xl overflow-x-hidden bg-blue-500 dark:bg-blue-600">
                                     <input
                                         autoFocus={true}
                                         list="produktSuggestions"
@@ -193,7 +193,7 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
                                         zł
                                     </div>
                                 </div>
-                                <button onDoubleClick={() => removeSelectedExpense(index)} className="absolute right-3 top-px text-red-600 dark:text-red-500 md:hidden md:group-hover:block">
+                                <button onDoubleClick={() => removeSelectedExpense(index)} className="absolute right-1 top-px text-red-600 dark:text-red-500 md:hidden md:group-hover:block">
                                     <GoTrash className="size-8 md:size-10 stdInt " />
                                 </button>
                             </li>

@@ -17,7 +17,7 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
     const isSunday = "border-red-500 from-blue-700 to-blue-900"
     const isMonday = "border-green-500 from-blue-600 to-blue-900"
     const isSaturday = "border-yellow-500 from-blue-600 to-blue-900"
-    const isDefault = "border-blue-200 dark:border-blue-400 from-blue-500 to-blue-800 dark:from-blue-600 dark:to-blue-800"
+    const isDefault = "border-blue-400 dark:border-blue-400 from-blue-500 to-blue-800 dark:from-blue-600 dark:to-blue-800"
 
     useEffect(() => {
         const storedData = localStorage.getItem("ExpenseTracker");
@@ -68,17 +68,17 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
                             {getDayExpenseSum().map(({ day, total, dayIndex }) => (
                                 <button
                                     onClick={() => chooseDay(day)}
-                                    className={`relative min-w-14 min-h-14 md:w-16 md:h-16 text-base sm:text-2xl flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
+                                    className={`relative min-w-14 min-h-14 md:w-16 md:h-16 text-base sm:text-2xl flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : day == new Date().getDate() ? "border-white from-blue-900 to-blue-950 dark:from-blue-200 dark:to-blue-600 text-white dark:text-black" : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
                                     key={day}>
                                     {total ? (
                                         <>
-                                            <span className="absolute right-0 -top-1 text-blue-400">{day}</span>
+                                            <span className={`absolute right-0.5 -bottom-0.5  ${day == new Date().getDate() ? "dark:text-black text-white" : "text-blue-400"} text-sm`}>{day}</span>
                                             <span>{Number(total.toFixed(2))}</span>
                                             <span>zł</span>
                                         </>
                                     ) : (
                                         <>
-                                            <span className="absolute right-0 -top-1 text-blue-400">{day}</span>
+                                            <span className={`absolute right-0.5 -bottom-0.5 ${day == new Date().getDate() ? "dark:text-black text-white" : "text-blue-400"} text-sm`}>{day}</span>
                                             <span>-</span>
                                         </>
                                     )}

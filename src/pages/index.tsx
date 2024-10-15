@@ -67,7 +67,7 @@ export default function Index() {
         <div className="flex items-center flex-col gap-4">
           <ul className="grid grid-cols-3 gap-3">
             {savedData && Object.entries(savedData).map(([year]) => (
-              <button className="bg-gradient-to-tr from-blue-500 to-blue-700 dark:from-blue-500 dark:to-blue-800 rounded-2xl md:rounded-3xl px-3 md:px-4 shadow-md stdInt duration-1000 text-3xl md:text-4xl" key={year}
+              <button className="bg-gradient-to-tr from-blue-500 to-blue-700 dark:from-blue-500 dark:to-blue-800 rounded-3xl px-3 md:px-4 shadow-md stdInt duration-1000 text-3xl md:text-4xl" key={year}
                 onClick={() => chooseYear(year)}>
                 {year}
               </button>
@@ -91,8 +91,8 @@ export default function Index() {
           <GoMoon className="h-12 md:h-14 w-auto text-blue-700" />
         )}
       </button>
-      <span className="absolute bottom-0.5 left-2.5 text-gray-500 dark:text-gray-500">
-        v1.25</span>
+      <span className="absolute bottom-0.5 left-2.5 text-gray-400 dark:text-gray-600">
+        v1.42</span>
     </div>
   )
 }
