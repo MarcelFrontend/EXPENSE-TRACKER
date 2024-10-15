@@ -83,15 +83,15 @@ export default function Index() {
       </button>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="absolute bottom-0 right-3 transition-colors duration-100 stdInt"
+        className="absolute bottom-0 right-2.5 transition-colors duration-100 stdInt"
       >
         {currentTheme === "dark" ? (
-          <GoSun className="h-12 md:h-14 w-auto text-blue-300" />
+          <GoSun className="h-9 md:h-14 w-auto text-blue-300" />
         ) : (
-          <GoMoon className="h-12 md:h-14 w-auto text-blue-700" />
+          <GoMoon className="h-9 md:h-14 w-auto text-blue-700" />
         )}
       </button>
-      <span className="absolute bottom-0.5 left-2.5 text-gray-400 dark:text-gray-600">
+      <span className="absolute bottom-0.5 left-2.5 text-xs text-gray-400 dark:text-gray-600">
         v1.52</span>
     </div>
   )
