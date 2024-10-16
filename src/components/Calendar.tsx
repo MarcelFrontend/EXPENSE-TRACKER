@@ -13,11 +13,13 @@ interface CalendarProps {
 // Możliwość zobaczenia z jakiego sklepu ile wydaliśmy
 // Jeśli któreś pole jest puste - nie możesz się cofnąć
 // Widok wykresu?
-// Możliwość porównania ceny produktu z poprzednimi cenami
+// Możliwość porównania ceny produktu z wcześniejszymi cenami
 // Podpowiadanie ceny danego produktu jeśli mamy o nim dane
 // Kopiowanie i wklejanie danych
-// Szybki wybór pójścia do dzisiejszego dnia
+// Szybki wybór przejścia do dzisiejszego dnia
 // Możliwość zmiany czułości na wydawanie
+// Lista zakupów?
+
 
 export default function Calendar({ chosenYear, yearData, setYearData }: CalendarProps) {
     const [monthData, setMonthData] = useState<DailyExpenses | null>()
@@ -45,7 +47,7 @@ export default function Calendar({ chosenYear, yearData, setYearData }: Calendar
     }
 
     return (
-        <div className={`w-screen h-[92vh] sm:h-screen text-white${themeSmooth}`}>
+        <div className={`w-screen h-[92vh] sm:h-screen text-white ${themeSmooth}`}>
             {monthData ? <DailyExpense chosenYear={chosenYear} monthData={monthData} setMonthData={setMonthData} chosenMonth={chosenMonth} /> :
                 <>
                     <header className={`h-12 md:h-14 flex items-center justify-between px-3 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 shadow-md ${themeSmooth} z-10 text-white dark:text-gray-200`}>

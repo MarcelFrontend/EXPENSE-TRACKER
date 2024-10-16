@@ -56,7 +56,7 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
     return (
         <>
             {selectedDay !== 0 ? <DayExpeses setSelectedDayData={setSelectedDayData} selectedDayData={selectedDayData} setSelectedDay={setSelectedDay} chosenYear={chosenYear} chosenMonth={chosenMonth} chosenDay={selectedDay} /> :
-                <div className="h-[80vh] sm:h-screen">
+                <div className="h-[80vh] sm:h-[87vh]">
                     <header className='h-12 md:h-14 bg-gradient-to-tr from-blue-700 to-blue-950 dark:from-blue-600 dark:to-blue-800 flex items-center justify-between px-3'>
                         <button onClick={() => setMonthData(null)}>
                             <GoArrowLeft className="size-11 md:size-14" />
@@ -68,7 +68,7 @@ export default function DailyExpense({ monthData, setMonthData, chosenMonth, cho
                             {getDayExpenseSum().map(({ day, total, dayIndex }) => (
                                 <button
                                     onClick={() => chooseDay(day)}
-                                    className={`relative min-w-14 min-h-14 md:w-16 md:h-16 text-base sm:text-2xl flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : day == new Date().getDate() ? "border-white from-blue-900 to-blue-950 dark:from-blue-200 dark:to-blue-600 text-white dark:text-black" : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
+                                    className={`relative min-w-14 min-h-14 sm:w-16 sm:h-16 text-base sm:text-lg flex items-center justify-center flex-col border-2 rounded-sm font-black stdInt bg-gradient-to-tr ${dayIndex == 0 ? isSunday : dayIndex == 1 ? isMonday : dayIndex == 6 ? isSaturday : day == new Date().getDate() ? "border-white from-blue-900 to-blue-950 dark:from-blue-200 dark:to-blue-600 text-white dark:text-black" : isDefault} ${Number(total.toFixed(2)) > 60 ? "text-red-400" : Number(total.toFixed(2)) > 40 ? "text-yellow-200" : "text-green-400"} `}
                                     key={day}>
                                     {total ? (
                                         <>
