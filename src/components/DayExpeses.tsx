@@ -41,7 +41,6 @@ export default function DayExpeses({ setSelectedDayData, selectedDayData, setSel
             });
             setProductSuggestions(Array.from(productSuggestions));
             setShopsSuggestions(Array.from(shopSuggestions));
-
         }
     }, []);
 

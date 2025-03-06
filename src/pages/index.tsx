@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { ExpenseTrackerData, MonthlyExpenses } from "../types/types";
-import { GoTrash, GoMoon, GoSun, GoPlus } from 'react-icons/go'
+import { GoTrash, GoMoon, GoSun, GoPlus, GoCopy, GoPaste } from 'react-icons/go'
 import { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar";
 import { useTheme } from "next-themes";
@@ -28,10 +28,10 @@ export default function Index() {
   }
 
   function deleteData() {
-    if(confirm("Wyczyścisz wszystkie dane, czy chcesz kontynuować?")){
+    if (confirm("Wyczyścisz wszystkie dane, czy chcesz kontynuować?")) {
       localStorage.removeItem("ExpenseTracker");
       window.location.reload()
-    }else{
+    } else {
       alert("Dane zachowano")
     }
   }
@@ -60,6 +60,26 @@ export default function Index() {
     setSavedData(updatedData)
   }
 
+  function copyData() {
+    if (savedData) {
+      navigator.clipboard.writeText(JSON.stringify(savedData)).then(() => {
+        console.log('Dane skopiowane do schowka!');
+      }).catch(err => {
+        console.error('Błąd podczas kopiowania danych: ', err);
+      });
+    }
+  }
+
+  function pasteData() {
+    navigator.clipboard.readText().then(value => {
+        localStorage.setItem("ExpenseTracker", value);
+        console.log('Dane zostały dodane do localStorage:', JSON.parse(value));
+    }).catch(err => {
+        console.error('Błąd podczas wklejania danych: ', err);
+    });
+}
+
+
   return (
     <div className="relative w-screen h-[92vh] sm:h-screen flex items-center justify-center text-white dark:text-gray-200">
       <Head>
@@ -82,6 +102,8 @@ export default function Index() {
           </button>
         </div>
       )}
+      <GoCopy onClick={() => copyData()} className="text-5xl p-1 bg-blue-500 rounded-full" />
+      <GoPaste onClick={() => pasteData()} className="text-5xl p-1 bg-blue-500 rounded-full" />
       <button onDoubleClick={() => deleteData()} className="absolute bottom-0">
         <GoTrash className="size-11 md:size-14 text-red-500 dark:text-red-600 border-2 border-black rounded-full p-1.5" />
       </button>
@@ -95,8 +117,6 @@ export default function Index() {
           <GoMoon className="h-9 md:h-14 w-auto text-blue-700" />
         )}
       </button>
-      <span className="absolute bottom-0.5 left-2.5 text-xs text-gray-400 dark:text-gray-600">
-        v1.63</span>
     </div>
   )
 }
