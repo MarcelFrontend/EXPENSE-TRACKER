@@ -1,8 +1,8 @@
 
 export interface Expense {
-    cena: number,
-    produkt: string,
-    sklep: string
+    price: number,
+    product: string,
+    source: string
 }
 
 export interface DailyExpenses {
