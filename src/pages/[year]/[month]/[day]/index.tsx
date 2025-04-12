@@ -26,7 +26,6 @@ const ChosenYear = () => {
 
     const [chosenDaySources, setChosenDaySources] = useState<string[]>([])
 
-    // Pobieranie danych
     useEffect(() => {
         if (!data) {
             fetchData();
@@ -45,33 +44,33 @@ const ChosenYear = () => {
     function prepareData() {
         if (chosenDayExpenses && data) {
             const expenseSources = new Set<string>()
-            const productSuggestions = new Set<string>()
-            const priceSuggestions = new Set<number>()
+            const productSuggestionsSet = new Set<string>()
+            const priceSuggestionsSet = new Set<number>()
             const allSourcesSuggestions = new Set<string>()
 
-            Object.entries(chosenDayExpenses).map(([_, expense]) => {
+            chosenDayExpenses.forEach((expense) => {
                 if (expense.source) {
                     expenseSources.add(expense.source.trim())
                 }
             })
 
-            Object.entries(data).map(([_, yearData]) => {
-                Object.entries(yearData).map(([_, monthData]) => {
+            Object.values(data).forEach((yearData) => {
+                Object.values(yearData).forEach((monthData) => {
                     if (Object.keys(monthData as MonthlyExpenses).length > 0) {
-                        Object.entries(monthData as MonthlyExpenses).map(([_, dayData]) => {
-                            Object.entries(dayData as DailyExpenses).map(([_, expense]) => {
-                                productSuggestions.add(expense.product.trim())
-                                priceSuggestions.add(expense.price)
+                        Object.values(monthData as MonthlyExpenses).forEach((dayData) => {
+                            Object.values(dayData as DailyExpenses).forEach((expense) => {
+                                productSuggestionsSet.add(expense.product.trim())
+                                priceSuggestionsSet.add(expense.price)
                                 allSourcesSuggestions.add(expense.source.trim())
-                            });
-                        });
+                            })
+                        })
                     }
-                });
-            });
+                })
+            })
 
             setChosenDaySources(Array.from(expenseSources))
-            setProductSuggestions(Array.from(productSuggestions))
-            setPriceSuggestions(Array.from(priceSuggestions))
+            setProductSuggestions(Array.from(productSuggestionsSet))
+            setPriceSuggestions(Array.from(priceSuggestionsSet))
             setAllSources(Array.from(allSourcesSuggestions))
         }
     }
@@ -101,8 +100,9 @@ const ChosenYear = () => {
 
     function deleteExpense(chosenExpense: Expense) {
         if (data && chosenDayExpenses) {
-            setChosenDayExpenses(chosenDayExpenses.filter((expense) => expense != chosenExpense))
-            data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = chosenDayExpenses.filter((expense) => expense != chosenExpense)
+            const filtered = chosenDayExpenses.filter((expense) => expense != chosenExpense)
+            setChosenDayExpenses(filtered)
+            data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = filtered
             localStorage.setItem("ExpenseTracker", JSON.stringify(data))
         }
     }
@@ -111,19 +111,19 @@ const ChosenYear = () => {
         const machingPriceSuggestions = new Set<number>([])
 
         if (productSuggestions.includes(manageChosenExpense.product)) {
-            Object.entries(data as ExpenseTrackerData).map(([_, yearData]) => {
-                Object.entries(yearData).map(([_, monthData]) => {
+            Object.values(data as ExpenseTrackerData).forEach((yearData) => {
+                Object.values(yearData).forEach((monthData) => {
                     if (Object.keys(monthData as MonthlyExpenses).length > 0) {
-                        Object.entries(monthData as MonthlyExpenses).map(([_, dayData]) => {
-                            Object.entries(dayData as DailyExpenses).map(([_, expense]) => {
+                        Object.values(monthData as MonthlyExpenses).forEach((dayData) => {
+                            Object.values(dayData as DailyExpenses).forEach((expense) => {
                                 if (expense.product == manageChosenExpense.product) {
                                     machingPriceSuggestions.add(expense.price)
                                 }
-                            });
-                        });
+                            })
+                        })
                     }
-                });
-            });
+                })
+            })
         }
 
         return (
@@ -139,10 +139,9 @@ const ChosenYear = () => {
                     />
                     {manageChosenExpense.product.trim().length > 4 && !productSuggestions.includes(manageChosenExpense.product) && (
                         <datalist id='productSuggestions'>
-                            {productSuggestions.map((suggestion, index) => {
-                                console.log(suggestion);
-                                return <option key={index} value={suggestion} />
-                            })}
+                            {productSuggestions.map((suggestion, index) => (
+                                <option key={index} value={suggestion} />
+                            ))}
                         </datalist>
                     )}
                 </li>
@@ -196,17 +195,15 @@ const ChosenYear = () => {
     function saveChange(index: number, expenseSources: string[] = chosenDaySources) {
         if (chosenDayExpenses && data) {
             if (manageChosenExpense.product.length > 3 && manageChosenExpense.price > 0) {
-                // Nowy wydatek
                 if (editedExpenseIndex == null) {
                     manageChosenExpense.source = expenseSources[index]
-                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = [...chosenDayExpenses, manageChosenExpense]
-
-                    setChosenDayExpenses([...chosenDayExpenses, manageChosenExpense])
+                    const newExpenses = [...chosenDayExpenses, manageChosenExpense]
+                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = newExpenses
+                    setChosenDayExpenses(newExpenses)
                 } else {
                     chosenDayExpenses[editedExpenseIndex] = manageChosenExpense
                     data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = chosenDayExpenses
-
-                    setChosenDayExpenses(chosenDayExpenses)
+                    setChosenDayExpenses([...chosenDayExpenses])
                 }
 
                 localStorage.setItem("ExpenseTracker", JSON.stringify(data))
@@ -218,15 +215,13 @@ const ChosenYear = () => {
     }
 
     function newSourceView() {
-
         function handleAddNewSource() {
             if (manageChosenExpense.source.length > 3 && manageChosenExpense.product.length > 3 && manageChosenExpense.price > 0) {
                 const expenseSources = new Set([...chosenDaySources])
                 expenseSources.add(manageChosenExpense.source)
-                setChosenDaySources(Array.from(expenseSources))
+                const updatedSources = Array.from(expenseSources)
 
-                let updatedSources = Array.from(expenseSources)
-
+                setChosenDaySources(updatedSources)
                 saveChange(updatedSources.indexOf(manageChosenExpense.source), updatedSources)
             } else {
                 alert("Uzupełnij wszystkie dane")
@@ -247,27 +242,16 @@ const ChosenYear = () => {
                             list='allSources'
                         />
                         <datalist id='allSources'>
-                            {allSources.map((suggestion, index) => {
-                                return <option key={index} value={suggestion.trim()}>{suggestion.trim()}</option>
-                            })}
+                            {allSources.map((suggestion, index) => (
+                                <option key={index} value={suggestion.trim()}>{suggestion.trim()}</option>
+                            ))}
                         </datalist>
-                        {!allSources.includes(manageChosenExpense.product) && (
-                            <datalist id='allSources'>
-                                {allSources.map((suggestion, index) => {
-                                    return <option key={index} value={suggestion}>{suggestion}</option>
-                                })}
-                            </datalist>
-                        )}
                     </li>
                     {modifyExpenseInputs()}
                 </ul>
                 <div className='flex items-center gap-2'>
-                    <button onClick={() => handleAddNewSource()}>
-                        Dodaj
-                    </button>
-                    <button onClick={() => resetView()}>
-                        Anuluj
-                    </button>
+                    <button onClick={handleAddNewSource}>Dodaj</button>
+                    <button onClick={resetView}>Anuluj</button>
                 </div>
             </Modal>
         )
@@ -277,39 +261,35 @@ const ChosenYear = () => {
         <div className={`relative h-dvh flex items-center justify-center ${addingExpense && "pointer-events-none"}`}>
             <ReturnLink disabled={addingExpense || addingNewSource} linkTo={`/${year}/${month}`} />
             <div className='flex flex-col gap-6'>
-                {chosenDaySources.map((source, index) => {
-                    return (
-                        <ul key={index}>
-                            {chosenDayExpenses && Object.entries(chosenDayExpenses).map(([i, expense]) => {
-                                if (expense.source == source) {
-                                    return (
-                                        <li key={i} className='flex gap-2'>
-                                            <span>{expense.product}</span>
-                                            <span>{expense.price} zł</span>
-                                            <span>{expense.source}</span>
-                                            <button disabled={addingExpense || addingNewSource} onClick={() => editExpense(Number(i), expense)}>
-                                                Edytuj
-                                            </button>
-                                            <button disabled={addingExpense || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
-                                                Usuń
-                                            </button>
-                                        </li>
-                                    )
-                                }
-                            })}
-                            {addingExpense && editingView(index)}
-                            <button disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
-                                Dodaj wydatek
-                            </button>
-                        </ul>
-                    )
-                })}
+                {chosenDaySources.map((source, index) => (
+                    <ul key={index}>
+                        {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
+                            if (expense.source === source) {
+                                return (
+                                    <li key={i} className='flex gap-2'>
+                                        <span>{expense.product}</span>
+                                        <span>{expense.price} zł</span>
+                                        <span>{expense.source}</span>
+                                        <button disabled={addingExpense || addingNewSource} onClick={() => editExpense(i, expense)}>Edytuj</button>
+                                        <button disabled={addingExpense || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>Usuń</button>
+                                    </li>
+                                )
+                            }
+                        })}
+                        {addingExpense && editingView(index)}
+                        <button disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
+                            Dodaj wydatek
+                        </button>
+                    </ul>
+                ))}
                 {addingNewSource && newSourceView()}
-                <button disabled={addingExpense || addingNewSource} onClick={() => setAddingNewSource(true)}>Dodaj źródło wydatku</button>
+                <button disabled={addingExpense || addingNewSource} onClick={() => setAddingNewSource(true)}>
+                    Dodaj źródło wydatku
+                </button>
             </div>
             <ThemeToggle />
         </div>
-
     )
 }
+
 export default ChosenYear;

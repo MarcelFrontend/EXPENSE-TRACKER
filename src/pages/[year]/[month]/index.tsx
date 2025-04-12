@@ -16,7 +16,6 @@ const ChosenYear = () => {
 
     const [monthData, setMonthData] = useState<DailyExpenses | null>(null)
 
-    // Pobieranie danych
     useEffect(() => {
         if (!data) {
             fetchData();
@@ -27,8 +26,9 @@ const ChosenYear = () => {
             const monthIndex = monthNames.indexOf(String(month));
             setMonthData(chosenYear[monthIndex]);
         }
-
     }, [data, fetchData, month]);
+
+    const days = Array.from({ length: numberOfDaysInMonth }, (_, i) => i + 1)
 
     return (
         <div className='h-dvh flex items-center justify-center'>
@@ -36,21 +36,25 @@ const ChosenYear = () => {
             {monthData && (
                 <ul className='grid grid-cols-7 gap-1 place-items-center'>
                     {
-                        Array.from({ length: numberOfDaysInMonth }, (_, index) => {
-                            const day = index + 1;
-                            let totalExpenses = 0;
+                        days.map(day => {
+                            let totalExpenses = 0
 
                             if (monthData[day]) {
                                 monthData[day].forEach((expense: Expense) => {
-                                    totalExpenses += expense.price;
-                                });
+                                    totalExpenses += expense.price
+                                })
                             }
+
                             return (
-                                <Link href={`${router.asPath}/${day}`} key={day} className='relative w-16 h-16 flex items-center justify-center border'>
+                                <Link
+                                    href={`${router.asPath}/${day}`}
+                                    key={day}
+                                    className='relative w-16 h-16 flex items-center justify-center border'
+                                >
                                     <span className='absolute -bottom-1 right-0'>{day}</span>
-                                    <span className=''>{totalExpenses.toFixed(2)} zł</span>
+                                    <span>{totalExpenses.toFixed(2)} zł</span>
                                 </Link>
-                            );
+                            )
                         })
                     }
                 </ul>
@@ -59,4 +63,4 @@ const ChosenYear = () => {
         </div>
     )
 }
-export default ChosenYear;
+export default ChosenYear
