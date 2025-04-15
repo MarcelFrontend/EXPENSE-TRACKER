@@ -14,9 +14,9 @@ const ThemeToggle = () => {
       title="Zmień motyw"
     >
       {currentTheme === 'dark' ? (
-        <GoSun className="h-9 md:h-14 w-auto text-blue-300 hover:text-blue-500 transition-colors duration-500" />
+        <GoSun className="h-12 md:h-14 w-auto text-blue-300 hover:text-blue-500 transition-colors duration-500" />
       ) : (
-        <GoMoon className="h-9 md:h-14 w-auto text-blue-700 hover:text-blue-800 transition-colors duration-300" />
+        <GoMoon className="h-12 md:h-14 w-auto text-blue-700 hover:text-blue-800 transition-colors duration-300" />
       )}
     </button>
   );

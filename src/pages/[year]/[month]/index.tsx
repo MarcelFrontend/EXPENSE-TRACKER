@@ -34,10 +34,10 @@ const ChosenYear = () => {
     }, [data, fetchData, month, year]);
 
     return (
-        <div className='h-dvh flex items-center justify-center md:text-lg text-gray-600 dark:text-gray-300'>
+        <div className='h-dvh flex items-center justify-center text-sm md:text-lg text-gray-600 dark:text-gray-300'>
             <ReturnLink linkTo={`/${year}`} />
             {monthData && (
-                <ul className='grid grid-cols-7 gap-1 md:gap-2.5 place-items-center'>
+                <ul className='grid grid-cols-5 md:grid-cols-7 gap-1 md:gap-2.5 place-items-center'>
                     {
                         days.map(day => {
                             let totalExpenses = 0
@@ -50,7 +50,7 @@ const ChosenYear = () => {
                                 <Link
                                     href={`${router.asPath}/${day}`}
                                     key={day}
-                                    className={`relative md:size-20 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-gray-100 rounded-md ${borderStyles} ${shadowStyles} ${bgStyles} duration-300 ${hoverActiveAnim}`}>
+                                    className={`relative size-16 md:size-20 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-gray-100 rounded-md ${borderStyles} ${shadowStyles} ${bgStyles} duration-300 ${hoverActiveAnim}`}>
                                     <span>
                                         {totalExpenses.toFixed(2)} zł
                                     </span>

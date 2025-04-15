@@ -40,24 +40,19 @@ const ChosenYear = () => {
               })
             })
 
-            function totalExpenseStatus(amount: number) {
-              if (amount < 100) {
-                return "green"
-              } else if (amount < 200) {
-                return "yellow"
-              } else {
-                return "red"
-              }
-            }
-
             return (
               <Link
                 href={`${router.asPath}/${monthNames[Number(month)]}`}
-                className={`relative md:min-w-36 flex items-center justify-center flex-col gap-1 dark:hover:text-gray-100 ${bgStyles} ${shadowStyles} border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-500 rounded-lg pt-2 pb-3.5 duration-300 ${hoverActiveAnim}`}
+                className={`relative max-md:min-w-24 max-md:text-sm md:min-w-36 flex items-center justify-center flex-col gap-1 dark:hover:text-gray-100 ${bgStyles} ${shadowStyles} border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-500 rounded-lg pt-2 pb-3.5 duration-300 ${hoverActiveAnim}`}
                 key={month}>
                 <span className='tracking-wider'>{monthNames[Number(month)]}</span>
                 <span className='font-bold'>{totalExpenses.toFixed(2)} zł</span>
-                <div className={`absolute top-1 right-1 size-2 md:size-3.5 rounded-full border border-black bg-${totalExpenseStatus(totalExpenses)}-500`} />
+                <div className={`absolute top-1 right-1 size-2 md:size-3.5 rounded-full border border-black ${totalExpenses < 100
+                    ? 'bg-green-500'
+                    : totalExpenses < 200
+                      ? 'bg-yellow-500'
+                      : 'bg-red-500'
+                  }`} />
               </Link>
             )
           })}

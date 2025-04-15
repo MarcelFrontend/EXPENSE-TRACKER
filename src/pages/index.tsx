@@ -60,8 +60,9 @@ export default function Index() {
       </div>
       <CopyPaste />
       <button onDoubleClick={() => deleteData()} className={`absolute bottom-1 ${hoverActiveAnim}`}>
-        <GoTrash className="size-11 md:size-14 p-1.5 border-2 border-red-800 hover:border-red-600 rounded-full dark:shadow-[0px_0px_10px_2px_rgb(125,0,0)] dark:hover:shadow-[0px_0px_10px_2px_rgb(200,0,0)] hover:bg-gray-100 dark:bg-black text-gray-800 hover:text-black dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-300" title="Usuń dane" />
+        <GoTrash className="size-12 md:size-14 p-1.5 border-2 border-red-800 hover:border-red-600 rounded-full dark:shadow-[0px_0px_10px_2px_rgb(125,0,0)] dark:hover:shadow-[0px_0px_10px_2px_rgb(200,0,0)] hover:bg-gray-100 dark:bg-black text-gray-800 hover:text-black dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-300" title="Usuń dane" />
       </button>
+      {/* Todo: Przycisk do przeskoczenia na dzisiejszy dzień */}
       <ThemeToggle />
     </div>
   )

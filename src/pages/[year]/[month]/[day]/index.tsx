@@ -291,11 +291,11 @@ const ChosenYear = () => {
                 {chosenDaySources.map((source, index) => (
                     <div key={index} className='flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
                         <span className='mb-2 font-bold'>{source}</span>
-                        <ul className='max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-3 pb-1'>
+                        <ul className='max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
                             {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
                                 if (expense.source === source) {
                                     return (
-                                        <li key={i} className={`relative flex justify-between gap-2 dark:bg-[rgb(0,0,0)] border-2 border-blue-300 dark:border-purple-950 p-2 rounded-lg shadow-md dark:shadow-purple-950/75 ${hoverActiveAnim}`}>
+                                        <li key={i} className={`relative flex justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1 px-2 md:p-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75 ${hoverActiveAnim}`}>
                                             <span>{expense.product}</span>
                                             <span>{expense.price} zł</span>
                                             <div className='flex items-center gap-2 text-2xl'>
