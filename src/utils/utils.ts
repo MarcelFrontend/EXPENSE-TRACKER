@@ -1,15 +1,18 @@
 import { ExpenseTrackerData } from "../types/types";
 
 export const monthNames = [
-        'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
-        'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
-    ];
+    'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+    'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+];
+
+export const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
 
 export function copyData(savedData: ExpenseTrackerData) {
     if (savedData) {
         navigator.clipboard.writeText(JSON.stringify(savedData)).then(() => {
-            console.log('Dane skopiowane do schowka!');
+            alert('Dane skopiowane do schowka.')
         }).catch(err => {
+            alert('Błąd podczas kopiowania danych.')
             console.error('Błąd podczas kopiowania danych: ', err);
         });
     }
@@ -18,9 +21,10 @@ export function copyData(savedData: ExpenseTrackerData) {
 export function pasteData() {
     navigator.clipboard.readText().then(value => {
         localStorage.setItem("ExpenseTracker", value);
-        console.log('Dane zostały dodane do localStorage:', JSON.parse(value));
+        alert("Dane zostały zapisane.")
     }).catch(err => {
-        console.error('Błąd podczas wklejania danych: ', err);
+        console.error('Błąd podczas zapisywania danych: ', err);
+        alert("Błąd podczas zapisywania danych.")
     });
 }
 

@@ -13,6 +13,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchData = () => {
         const storedData = localStorage.getItem("ExpenseTracker");
+        
         if (storedData) {
             setData(JSON.parse(storedData))
         } else {

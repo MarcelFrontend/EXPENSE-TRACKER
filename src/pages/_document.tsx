@@ -4,8 +4,10 @@ export default function Document() {
 
   return (
     <Html lang="en" className="dark">
-      <Head />
-      <body className="antialiased select-none transition-colors duration-500 bg-blue-300 dark:bg-slate-900 overflow-hidden">
+      <Head>
+        <title>Expense Tracker</title>
+      </Head>
+      <body className="antialiased select-none transition-colors duration-500 bg-blue-100 dark:bg-black overflow-hidden">
         <Main />
         <NextScript />
       </body>
