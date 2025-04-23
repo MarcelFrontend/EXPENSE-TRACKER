@@ -330,7 +330,7 @@ const ChosenYear = () => {
 
         return (
             <div className='absolute left-4 bottom-2 flex gap-2'>
-                <button onClick={() => copyDayExpense()} title='Przygotuj zapytanie dla ChatGPT' className={`${actionBtnStyles}`}>
+                <button onClick={() => copyDayExpense()} title='Przygotuj zapytanie dla AI' className={`${actionBtnStyles}`}>
                     <GoCopy className='p-2' />
                 </button>
                 <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className={`${actionBtnStyles}`}>
