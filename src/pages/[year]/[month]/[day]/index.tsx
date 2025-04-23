@@ -48,43 +48,42 @@ const ChosenYear = () => {
     }, [data, fetchData, year, month, day]);
 
     useEffect(() => {
-        prepareData()
-    }, [chosenDayExpenses]);
+        // Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
+        function prepareData() {
+            if (chosenDayExpenses && data) {
+                const expenseSources = new Set<string>()
+                const productSuggestionsSet = new Set<string>()
+                const priceSuggestionsSet = new Set<number>()
+                const allSourcesSuggestions = new Set<string>()
 
-    // Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
-    function prepareData() {
-        if (chosenDayExpenses && data) {
-            const expenseSources = new Set<string>()
-            const productSuggestionsSet = new Set<string>()
-            const priceSuggestionsSet = new Set<number>()
-            const allSourcesSuggestions = new Set<string>()
-
-            chosenDayExpenses.forEach((expense) => {
-                if (expense.source) {
-                    expenseSources.add(expense.source.trim())
-                }
-            })
-
-            Object.values(data).forEach((yearData) => {
-                Object.values(yearData).forEach((monthData) => {
-                    if (Object.keys(monthData as MonthlyExpenses).length > 0) {
-                        Object.values(monthData as MonthlyExpenses).forEach((dayData) => {
-                            Object.values(dayData as DailyExpenses).forEach((expense) => {
-                                if (expense.product.trim().length > 3) productSuggestionsSet.add(expense.product.trim())
-                                if (expense.price > 0) priceSuggestionsSet.add(expense.price)
-                                if (!Array.from(expenseSources).includes(expense.source.trim())) allSourcesSuggestions.add(expense.source.trim())
-                            })
-                        })
+                chosenDayExpenses.forEach((expense) => {
+                    if (expense.source) {
+                        expenseSources.add(expense.source.trim())
                     }
                 })
-            })
 
-            setChosenDaySources(Array.from(expenseSources))
-            setProductSuggestions(Array.from(productSuggestionsSet))
-            setPriceSuggestions(Array.from(priceSuggestionsSet))
-            setAllSources(Array.from(allSourcesSuggestions))
+                Object.values(data).forEach((yearData) => {
+                    Object.values(yearData).forEach((monthData) => {
+                        if (Object.keys(monthData as MonthlyExpenses).length > 0) {
+                            Object.values(monthData as MonthlyExpenses).forEach((dayData) => {
+                                Object.values(dayData as DailyExpenses).forEach((expense) => {
+                                    if (expense.product.trim().length > 3) productSuggestionsSet.add(expense.product.trim())
+                                    if (expense.price > 0) priceSuggestionsSet.add(expense.price)
+                                    if (!Array.from(expenseSources).includes(expense.source.trim())) allSourcesSuggestions.add(expense.source.trim())
+                                })
+                            })
+                        }
+                    })
+                })
+
+                setChosenDaySources(Array.from(expenseSources))
+                setProductSuggestions(Array.from(productSuggestionsSet))
+                setPriceSuggestions(Array.from(priceSuggestionsSet))
+                setAllSources(Array.from(allSourcesSuggestions))
+            }
         }
-    }
+        prepareData()
+    }, [chosenDayExpenses, data]);
 
     // Funkcja obsługująca zmiane stanu w konkretnym elemencie np product, price lub source
     function saveExpenseState(field: keyof Expense, value: string | number) {
@@ -297,7 +296,6 @@ const ChosenYear = () => {
 
             setChosenDayExpenses(JSON.parse(pastedData))
             if (data && JSON.parse(pastedData).length > 0) {
-                JSON.parse(pastedData).length > 0
                 data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
                 localStorage.setItem("ExpenseTracker", JSON.stringify(data))
                 alert("Dane zostały zapisane.")
