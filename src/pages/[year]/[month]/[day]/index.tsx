@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useData } from '@/context/DataProvider'
 import { Expense, DailyExpenses, MonthlyExpenses, ExpenseTrackerData } from '@/types/types'
-import { hoverActiveAnim, monthNames } from '@/utils/utils'
+import { monthNames } from '@/utils/utils'
 import ReturnLink from '@/components/ReturnLink'
 import ThemeToggle from '@/components/ThemeToogle';
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPaste } from "react-icons/fa";
 
 const ChosenYear = () => {
     const { data, fetchData } = useData() as { data: ExpenseTrackerData | null; fetchData: () => void };
@@ -27,6 +27,7 @@ const ChosenYear = () => {
 
     const [chosenDaySources, setChosenDaySources] = useState<string[]>([])
 
+    const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
     const ulStyles = "flex flex-col gap-2"
     const modifyExpenseLiStyles = "relative"
     const labelStyles = "absolute -top-5 left-1 text-sm text-black dark:text-gray-300"
@@ -50,6 +51,7 @@ const ChosenYear = () => {
         prepareData()
     }, [chosenDayExpenses]);
 
+    // Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
     function prepareData() {
         if (chosenDayExpenses && data) {
             const expenseSources = new Set<string>()
@@ -68,9 +70,9 @@ const ChosenYear = () => {
                     if (Object.keys(monthData as MonthlyExpenses).length > 0) {
                         Object.values(monthData as MonthlyExpenses).forEach((dayData) => {
                             Object.values(dayData as DailyExpenses).forEach((expense) => {
-                                productSuggestionsSet.add(expense.product.trim())
-                                priceSuggestionsSet.add(expense.price)
-                                allSourcesSuggestions.add(expense.source.trim())
+                                if (expense.product.trim().length > 3) productSuggestionsSet.add(expense.product.trim())
+                                if (expense.price > 0) priceSuggestionsSet.add(expense.price)
+                                if (!Array.from(expenseSources).includes(expense.source.trim())) allSourcesSuggestions.add(expense.source.trim())
                             })
                         })
                     }
@@ -84,6 +86,7 @@ const ChosenYear = () => {
         }
     }
 
+    // Funkcja obsługująca zmiane stanu w konkretnym elemencie np product, price lub source
     function saveExpenseState(field: keyof Expense, value: string | number) {
         if (field == "price" && typeof value == 'number' && isNaN(value)) {
             value = ""
@@ -101,6 +104,7 @@ const ChosenYear = () => {
         setManageChosenExpense({ product: "", price: 0, source: "" })
     }
 
+    // Funkcja zmianu stanu edycji na true oraz ustawiająca odpowiedni index oraz wybrany wydatek, który będzie edytowany
     function editExpense(i: number, expense: Expense) {
         setEditedExpenseIndex(i)
         setAddingExpense(true)
@@ -116,7 +120,8 @@ const ChosenYear = () => {
         }
     }
 
-    function modifyExpenseInputs() {
+    // Funkcja wyświetlająca widok edycji/dodania/utworzenia wydatku
+    function modifyExpenseInputsView() {
         const machingPriceSuggestions = new Set<number>([])
 
         if (productSuggestions.includes(manageChosenExpense.product)) {
@@ -186,11 +191,14 @@ const ChosenYear = () => {
         )
     }
 
+    // Funkcja obsługująca edycje istniejącego lub dodanie nowego wydatku 
     function saveChange(index: number, expenseSources: string[] = chosenDaySources) {
         if (chosenDayExpenses && data) {
             const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
-            console.log(parsedPrice);
-
+            if (parsedPrice <= 0) {
+                alert("Cena musi być większa niż 0.")
+                return
+            }
             if (manageChosenExpense.product.length > 3 && !isNaN(parsedPrice)) {
                 const updatedExpense: Expense = {
                     ...manageChosenExpense,
@@ -211,17 +219,18 @@ const ChosenYear = () => {
                 localStorage.setItem("ExpenseTracker", JSON.stringify(data))
                 resetView()
             } else {
-                alert("Wypełnij poprawnie wszystkie pola")
+                alert("Wypełnij poprawnie wszystkie pola.")
             }
         }
     }
 
+    // Modal pokazujący widok edycji danego indeksu
     function editingView(index: number) {
         return (
             <Modal onClose={resetView}>
                 <span>Wprowadź dane</span>
                 <ul className='flex flex-col gap-9'>
-                    {modifyExpenseInputs()}
+                    {modifyExpenseInputsView()}
                 </ul>
                 <div className='flex items-center gap-2'>
                     <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => saveChange(index)}>
@@ -235,11 +244,10 @@ const ChosenYear = () => {
         );
     }
 
+    // Funkcja obsługująca wyświetlenie i dodanie nowego źródła wydatku
     function newSourceView() {
-
         function handleAddNewSource() {
             const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
-            console.log(parsedPrice);
 
             if (manageChosenExpense.source.length > 3 && manageChosenExpense.product.length > 3 && !isNaN(parsedPrice)) {
                 const expenseSources = new Set([...chosenDaySources])
@@ -252,7 +260,6 @@ const ChosenYear = () => {
                 alert("Uzupełnij wszystkie dane")
             }
         }
-
         return (
             <Modal onClose={resetView}>
                 <span>Wprowadź dane</span>
@@ -274,7 +281,7 @@ const ChosenYear = () => {
                             ))}
                         </datalist>
                     </li>
-                    {modifyExpenseInputs()}
+                    {modifyExpenseInputsView()}
                 </ul>
                 <div className='flex items-center gap-5'>
                     <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={handleAddNewSource}>Dodaj</button>
@@ -284,45 +291,70 @@ const ChosenYear = () => {
         )
     }
 
+    function pasteDayExpense() {
+        navigator.clipboard.readText().then(pastedData => {
+            console.log(JSON.parse(pastedData));
+
+            setChosenDayExpenses(JSON.parse(pastedData))
+            if (data && JSON.parse(pastedData).length > 0) {
+                JSON.parse(pastedData).length > 0
+                data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
+                localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                alert("Dane zostały zapisane.")
+            }
+        }).catch(err => {
+            console.error('Błąd podczas zapisywania danych: ', err);
+            alert("Błąd podczas zapisywania danych.")
+        });
+    }
+
     return (
         <div className={`relative h-dvh flex items-center justify-center md:text-lg text-gray-900 dark:text-gray-400 ${addingExpense && "pointer-events-none"}`}>
             <ReturnLink disabled={addingExpense || addingNewSource} linkTo={`/${year}/${month}`} />
             <div className='max-h-[90vh] flex items-center flex-col gap-6 overflow-y-auto customScroll p-10'>
-                {chosenDaySources.map((source, index) => (
-                    <div key={index} className='flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
-                        <span className='mb-2 font-bold'>{source}</span>
-                        <ul className='max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
-                            {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
-                                if (expense.source === source) {
-                                    return (
-                                        <li key={i} className={`relative flex justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1 px-2 md:p-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75 ${hoverActiveAnim}`}>
-                                            <span>{expense.product}</span>
-                                            <span>{expense.price} zł</span>
-                                            <div className='flex items-center gap-2 text-2xl'>
-                                                <button className='text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500' disabled={addingExpense || addingNewSource} onClick={() => editExpense(i, expense)}>
-                                                    <FaEdit />
-                                                </button>
-                                                <button className='text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500' disabled={addingExpense || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
-                                                    <FaTrash />
-                                                </button>
-                                            </div>
-                                        </li>
-                                    )
-                                }
-                            })}
-                        </ul>
-                        {addingExpense && editingView(index)}
-                        <button className={`mt-8 ${posActBtnStyles} py-1.5`}
-                            disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
-                            Dodaj wydatek
-                        </button>
-                    </div>
-                ))}
+                {chosenDaySources.map((source, index) => {
+                    let totalExpenses = 0
+                    return (
+                        <div key={index} className='relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
+                            <span className='mb-2 font-bold'>{source}</span>
+                            <ul className='max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
+                                {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
+                                    if (expense.source === source) {
+                                        totalExpenses += expense.price
+                                        return (
+                                            <li key={i} className={`relative flex items-center justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1.5 px-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75`}>
+                                                <span>{expense.product}</span>
+                                                <div className='flex items-center gap-2'>
+                                                    <span className='max-md:text-sm'>{expense.price} zł</span>
+                                                    <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500 ${hoverActiveAnim}`} disabled={addingExpense || addingNewSource} onClick={() => editExpense(i, expense)}>
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button className={`text-2xl text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500 ${hoverActiveAnim}`} disabled={addingExpense || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
+                                                        <FaTrash />
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        )
+                                    }
+                                })}
+                            </ul>
+                            {addingExpense && editingView(index)}
+                            <button className={`mt-8 ${posActBtnStyles} py-1.5`}
+                                disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
+                                Dodaj wydatek
+                            </button>
+                            <span className='absolute bottom-3 right-6'>{totalExpenses.toFixed(2)} zł</span>
+                        </div>
+                    )
+                })}
                 {addingNewSource && newSourceView()}
                 <button className={`${posActBtnStyles} py-2`} disabled={addingExpense || addingNewSource} onClick={() => setAddingNewSource(true)}>
                     Dodaj źródło wydatku
                 </button>
             </div>
+            <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className='absolute left-4 bottom-2 text-4xl md:text-5xl rounded-full border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-700 dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] hover:bg-gray-100 dark:bg-black text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 ${hoverActiveAnim} transition-colors'>
+                <FaPaste className='p-2' />
+            </button>
             <ThemeToggle />
         </div>
     )

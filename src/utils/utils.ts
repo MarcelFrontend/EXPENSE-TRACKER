@@ -5,8 +5,6 @@ export const monthNames = [
     'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
 ];
 
-export const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
-
 export function copyData(savedData: ExpenseTrackerData) {
     if (savedData) {
         navigator.clipboard.writeText(JSON.stringify(savedData)).then(() => {

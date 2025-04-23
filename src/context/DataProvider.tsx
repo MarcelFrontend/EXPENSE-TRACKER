@@ -13,7 +13,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchData = () => {
         const storedData = localStorage.getItem("ExpenseTracker");
-        
+
         if (storedData) {
             setData(JSON.parse(storedData))
         } else {
@@ -43,10 +43,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <DataFetchCtx.Provider value= {{ data, fetchData }
-}>
-    { children }
-    </DataFetchCtx.Provider>
+        <DataFetchCtx.Provider value={{ data, fetchData }}>
+            {children}
+        </DataFetchCtx.Provider>
     )
 }
 

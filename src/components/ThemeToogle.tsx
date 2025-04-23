@@ -1,11 +1,13 @@
 // components/ThemeToggle.tsx
 import { GoMoon, GoSun } from 'react-icons/go';
 import { useTheme } from 'next-themes';
-import { hoverActiveAnim } from '@/utils/utils';
 
 const ThemeToggle = () => {
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
+
+  const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
+
 
   return (
     <button
