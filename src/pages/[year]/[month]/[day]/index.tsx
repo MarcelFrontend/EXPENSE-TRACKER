@@ -7,7 +7,8 @@ import { Expense, DailyExpenses, MonthlyExpenses, ExpenseTrackerData } from '@/t
 import { monthNames } from '@/utils/utils'
 import ReturnLink from '@/components/ReturnLink'
 import ThemeToggle from '@/components/ThemeToogle';
-import { FaEdit, FaTrash, FaPaste } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { GoCopy, GoPaste } from 'react-icons/go';
 
 const ChosenYear = () => {
     const { data, fetchData } = useData() as { data: ExpenseTrackerData | null; fetchData: () => void };
@@ -290,40 +291,73 @@ const ChosenYear = () => {
         )
     }
 
-    function pasteDayExpense() {
-        navigator.clipboard.readText().then(pastedData => {
-            console.log(JSON.parse(pastedData));
+    function copyPasteDayExpense() {
 
-            setChosenDayExpenses(JSON.parse(pastedData))
-            if (data && JSON.parse(pastedData).length > 0) {
-                data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
-                localStorage.setItem("ExpenseTracker", JSON.stringify(data))
-                alert("Dane zostały zapisane.")
+        const actionBtnStyles = `text-4xl md:text-5xl rounded-full border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-700 dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] hover:bg-gray-100 dark:bg-black text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 ${hoverActiveAnim} transition-colors`
+
+        function pasteDayExpense() {
+            navigator.clipboard.readText().then(pastedData => {
+                setChosenDayExpenses(JSON.parse(pastedData))
+                if (data && JSON.parse(pastedData).length > 0) {
+                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
+                    localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                    alert("Dane zostały zapisane.")
+                }
+            }).catch(err => {
+                console.error('Błąd:', err);
+                alert("Błąd podczas zapisywania danych.")
+            });
+        }
+
+        function copyDayExpense() {
+            let prompt = ""
+            if (chosenDayExpenses) {
+                prompt = "Sugerując się zawartością tych danych dodaj nowe wydatki pochodzące z paragonu w podobny sposób, to znaczy przy dodawaniu nazwy produktu nie kończ słów ani nie dodawaj ilości ani wagi produktu, przy zapisywaniu ceny uwzględnij ewentualne opusty, a przy źródle produktu napisz tylko nazwę sklepu bez pisania ulicy, na której się znajduje. Oto zapisane dane do których masz dopisać nowe wraz z istniejącymi danymi:"
+            } else {
+                prompt = "Z zawartości tego zdjęcia wypisz w formacie json dane wydatków w formacie: {product: <nazwa_produktu>,price:<cena_produktu>,source:<pochodzenie/sklep_w_którym_został_kupiony_produkt>}, w nazwie produktu nie pisz ilości ani wagi zakupionego produktu, przepisz nazwę produktu taką jaka jest na paragonie i nie dokańczaj nazw oraz nie rozwijaj skrótów, jako cene uwzględnij cene po opuście jeśli występuje, jako pochodzenie wydatku napisz tylko nazwę sklepu czyli np: Biedronka, Carrefour lub cokolwiek innego bez pisania dokładnego adresu."
             }
-        }).catch(err => {
-            console.error('Błąd podczas zapisywania danych: ', err);
-            alert("Błąd podczas zapisywania danych.")
-        });
+            navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpenses)).then(() => {
+                if (chosenDayExpenses) {
+                    alert('Dane i zapytanie skopiowane do schowka.')
+                } else {
+                    alert('Zapytanie skopiowane do schowka.')
+                }
+            }).catch(err => {
+                alert('Błąd podczas kopiowania.')
+                console.error('Błąd podczas kopiowania danych: ', err);
+            });
+        }
+
+        return (
+            <div className='absolute left-4 bottom-2 flex gap-2'>
+                <button onClick={() => copyDayExpense()} title='Przygotuj zapytanie dla ChatGPT' className={`${actionBtnStyles}`}>
+                    <GoCopy className='p-2' />
+                </button>
+                <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className={`${actionBtnStyles}`}>
+                    <GoPaste className='p-2' />
+                </button>
+            </div>
+        )
     }
 
     return (
         <div className={`relative h-dvh flex items-center justify-center md:text-lg text-gray-900 dark:text-gray-400 ${addingExpense && "pointer-events-none"}`}>
             <ReturnLink disabled={addingExpense || addingNewSource} linkTo={`/${year}/${month}`} />
-            <div className='max-h-[90vh] flex items-center flex-col gap-6 overflow-y-auto customScroll p-10'>
+            <div className='max-h-[90vh] flex items-center flex-col gap-6 overflow-y-auto customScroll p-10 overflow-x-hidden'>
                 {chosenDaySources.map((source, index) => {
                     let totalExpenses = 0
                     return (
-                        <div key={index} className='relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
+                        <div key={index} className='w-[110%] relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
                             <span className='mb-2 font-bold'>{source}</span>
-                            <ul className='max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
+                            <ul className='w-full max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
                                 {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
                                     if (expense.source === source) {
                                         totalExpenses += expense.price
                                         return (
-                                            <li key={i} className={`relative flex items-center justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1.5 px-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75`}>
-                                                <span>{expense.product}</span>
+                                            <li key={i} className={`w-full relative flex items-center justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1.5 px-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75`}>
+                                                <span>{expense.product.length > 13 ? expense.product.slice(0, 12) + "..." : expense.product}</span>
                                                 <div className='flex items-center gap-2'>
-                                                    <span className='max-md:text-sm'>{expense.price} zł</span>
+                                                    <span className='max-md:text-sm whitespace-nowrap'>{expense.price} zł</span>
                                                     <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500 ${hoverActiveAnim}`} disabled={addingExpense || addingNewSource} onClick={() => editExpense(i, expense)}>
                                                         <FaEdit />
                                                     </button>
@@ -336,12 +370,17 @@ const ChosenYear = () => {
                                     }
                                 })}
                             </ul>
-                            {addingExpense && editingView(index)}
-                            <button className={`mt-8 ${posActBtnStyles} py-1.5`}
-                                disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
-                                Dodaj wydatek
-                            </button>
-                            <span className='absolute bottom-3 right-6'>{totalExpenses.toFixed(2)} zł</span>
+                            <div className='w-full flex items-center justify-between mt-3 pr-4'>
+                                {addingExpense && editingView(index)}
+                                <button className={`${posActBtnStyles} py-1.5`}
+                                    disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
+                                    Dodaj wydatek
+                                </button>
+                                <div className='flex items-center flex-col'>
+                                    <span>Suma:</span>
+                                    <span className={`font-semibold ${Number(totalExpenses.toFixed(2)) < 50 ? "text-green-500 dark:text-green-500" : Number(totalExpenses.toFixed(2)) < 70 ? "text-yellow-500 dark:text-yellow-500" : "text-red-500 dark:text-red-500"}`}>{totalExpenses.toFixed(2)} zł</span>
+                                </div>
+                            </div>
                         </div>
                     )
                 })}
@@ -350,9 +389,7 @@ const ChosenYear = () => {
                     Dodaj źródło wydatku
                 </button>
             </div>
-            <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className='absolute left-4 bottom-2 text-4xl md:text-5xl rounded-full border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-700 dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] hover:bg-gray-100 dark:bg-black text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 ${hoverActiveAnim} transition-colors'>
-                <FaPaste className='p-2' />
-            </button>
+            {copyPasteDayExpense()}
             <ThemeToggle />
         </div>
     )

@@ -69,7 +69,7 @@ export default function Index() {
           <GoPlus className="size-12 md:size-14" />
         </button>
         {currentYearDataExists &&
-          <Link href={todayDateLink} className={`absolute -bottom-20 text-xl lg:text-4xl dark:text-purple-500 ${hoverActiveAnim}`}>Przejdź do dzisiaj</Link>
+          <Link href={todayDateLink} className={`absolute -bottom-20 text-xl lg:text-4xl text-blue-700 dark:text-purple-500 ${hoverActiveAnim}`}>Przejdź do dzisiaj</Link>
         }
       </div>
       <CopyPaste />
