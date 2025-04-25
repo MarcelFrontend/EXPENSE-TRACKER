@@ -114,7 +114,7 @@ const ChosenYear = () => {
     }
 
     // Funkcja zmianu stanu edycji na true oraz ustawiająca odpowiedni index oraz wybrany wydatek, który będzie edytowany
-    function editExpense(i: number, expense: Expense) {
+    function editExpense(i: number, expense: Expense) {        
         setEditedExpenseIndex(i)
         setManageChosenExpense(expense)
     }
@@ -147,6 +147,7 @@ const ChosenYear = () => {
                 })
             })
         }
+
 
         return (
             <>
@@ -383,7 +384,7 @@ const ChosenYear = () => {
                                 })}
                             </ul>
                             <div className='w-full flex items-center justify-between mt-3 pr-4'>
-                                {addingExpense && editingView(index)}
+                                {editedExpenseIndex && editingView(index)}
                                 <button className={`${posActBtnStyles} py-1.5`}
                                     disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
                                     Dodaj wydatek
