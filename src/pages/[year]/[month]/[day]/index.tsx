@@ -321,7 +321,7 @@ const ChosenYear = () => {
 
         function copyDayExpense() {
             let prompt = ""
-            if (chosenDayExpenses) {
+            if (chosenDayExpenses && chosenDayExpenses.length > 0) {
                 prompt = "Sugerując się zawartością tych danych dodaj nowe wydatki pochodzące z paragonu w podobny sposób, to znaczy przy dodawaniu nazwy produktu nie kończ słów ani nie dodawaj ilości ani wagi produktu, przy zapisywaniu ceny uwzględnij ewentualne opusty, a przy źródle produktu napisz tylko nazwę sklepu bez pisania ulicy, na której się znajduje. Oto zapisane dane do których masz dopisać nowe wraz z istniejącymi danymi:"
                 navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpenses)).then(() => {
                     alert('Dane i zapytanie skopiowane do schowka.')
