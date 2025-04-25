@@ -15,12 +15,12 @@ const ChosenYear = () => {
     const router = useRouter();
     const { year, month, day } = router.query;
 
-    const [chosenDayExpenses, setChosenDayExpenses] = useState<Expense[] | null>(null)
-    const [manageChosenExpense, setManageChosenExpense] = useState<Expense>({ product: "", price: 0, source: "" })
+    const [chosenDayExpensesArray, setChosenDayExpensesArray] = useState<Expense[] | null>(null)
 
-    const [addingExpense, setAddingExpense] = useState<boolean>(false)
     const [addingNewSource, setAddingNewSource] = useState<boolean>(false)
+    const [manageChosenExpense, setManageChosenExpense] = useState<Expense>({ product: "", price: 0, source: "" })
     const [editedExpenseIndex, setEditedExpenseIndex] = useState<number | null>(null)
+    const [indexOfNewExpenseSource, setIndexOfNewExpenseSource] = useState<number | null>(null)
 
     const [productSuggestions, setProductSuggestions] = useState<string[]>([])
     const [priceSuggestions, setPriceSuggestions] = useState<number[]>([])
@@ -39,34 +39,34 @@ const ChosenYear = () => {
 
     useEffect(() => {
         console.clear();
-    
+
         if (!data) {
             fetchData();
         }
-    
+
         if (data && day) {
             const monthExpenses = data[Number(year)][monthNames.indexOf(String(month))];
             let dayExpenses = monthExpenses[Number(day)];
-    
+
             if (!monthExpenses.hasOwnProperty(Number(day))) {
-               dayExpenses = []
+                dayExpenses = []
                 data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = dayExpenses
             }
 
-            setChosenDayExpenses(dayExpenses);
+            setChosenDayExpensesArray(dayExpenses);
         }
     }, [data, fetchData, year, month, day]);
 
     useEffect(() => {
         // Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
         function prepareData() {
-            if (chosenDayExpenses && data) {
+            if (chosenDayExpensesArray && data) {
                 const expenseSources = new Set<string>()
                 const productSuggestionsSet = new Set<string>()
                 const priceSuggestionsSet = new Set<number>()
                 const allSourcesSuggestions = new Set<string>()
 
-                chosenDayExpenses.forEach((expense) => {
+                chosenDayExpensesArray.forEach((expense) => {
                     if (expense.source) {
                         expenseSources.add(expense.source.trim())
                     }
@@ -79,7 +79,7 @@ const ChosenYear = () => {
                                 Object.values(dayData as DailyExpenses).forEach((expense) => {
                                     if (expense.product.trim().length > 3) productSuggestionsSet.add(expense.product.trim())
                                     if (expense.price > 0) priceSuggestionsSet.add(expense.price)
-                                    if (!Array.from(expenseSources).includes(expense.source.trim())) allSourcesSuggestions.add(expense.source.trim())
+                                    if (expense.source && !Array.from(expenseSources).includes(expense.source.trim())) allSourcesSuggestions.add(expense.source.trim())
                                 })
                             })
                         }
@@ -93,7 +93,7 @@ const ChosenYear = () => {
             }
         }
         prepareData()
-    }, [chosenDayExpenses, data]);
+    }, [chosenDayExpensesArray, data]);
 
     // Funkcja obsługująca zmiane stanu w konkretnym elemencie np product, price lub source
     function saveExpenseState(field: keyof Expense, value: string | number) {
@@ -108,28 +108,79 @@ const ChosenYear = () => {
 
     function resetView() {
         setEditedExpenseIndex(null)
-        setAddingExpense(false)
+        setIndexOfNewExpenseSource(null)
         setAddingNewSource(false)
         setManageChosenExpense({ product: "", price: 0, source: "" })
     }
 
+    function copyPasteDayExpenseView() {
+
+        const actionBtnStyles = `text-4xl md:text-5xl rounded-full border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-700 dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] hover:bg-gray-100 dark:bg-black text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 ${hoverActiveAnim} transition-colors`
+
+        function pasteDayExpense() {
+            navigator.clipboard.readText().then(pastedData => {
+                setChosenDayExpensesArray(JSON.parse(pastedData))
+                if (data && JSON.parse(pastedData).length > 0) {
+                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
+                    localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                    alert("Dane zostały zapisane.")
+                }
+            }).catch(err => {
+                console.error('Błąd:', err);
+                alert("Błąd podczas zapisywania danych.")
+            });
+        }
+
+        function copyDayExpense() {
+            let prompt = ""
+            if (chosenDayExpensesArray && chosenDayExpensesArray.length > 0) {
+                prompt = "Sugerując się zawartością tych danych dodaj nowe wydatki pochodzące z paragonu w podobny sposób, to znaczy przy dodawaniu nazwy produktu nie kończ słów ani nie dodawaj ilości ani wagi produktu, przy zapisywaniu ceny uwzględnij ewentualne opusty, a przy źródle produktu napisz tylko nazwę sklepu bez pisania ulicy, na której się znajduje. Oto zapisane dane do których masz dopisać nowe wraz z istniejącymi danymi:"
+                navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpensesArray)).then(() => {
+                    alert('Dane i zapytanie skopiowane do schowka.')
+                }).catch(err => {
+                    alert('Błąd podczas kopiowania.')
+                    console.error('Błąd podczas kopiowania danych: ', err);
+                });
+            } else {
+                prompt = "Z zawartości tego zdjęcia wypisz w formacie json dane wydatków w formacie: {product: <nazwa_produktu>,price:<cena_produktu>,source:<pochodzenie/sklep_w_którym_został_kupiony_produkt>}, w nazwie produktu nie pisz ilości ani wagi zakupionego produktu, przepisz nazwę produktu taką jaka jest na paragonie i nie dokańczaj nazw oraz nie rozwijaj skrótów, jako cene uwzględnij cene po opuście jeśli występuje, jako pochodzenie wydatku napisz tylko nazwę sklepu czyli np: Biedronka, Carrefour lub cokolwiek innego bez pisania dokładnego adresu."
+                navigator.clipboard.writeText(prompt).then(() => {
+                    alert('Zapytanie skopiowane do schowka.')
+                }).catch(err => {
+                    alert('Błąd podczas kopiowania.')
+                    console.error('Błąd podczas kopiowania danych: ', err);
+                });
+            }
+        }
+
+        return (
+            <div className='absolute left-4 bottom-2 flex gap-2'>
+                <button onClick={() => copyDayExpense()} title='Przygotuj zapytanie dla AI' className={`${actionBtnStyles}`}>
+                    <GoCopy className='p-2' />
+                </button>
+                <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className={`${actionBtnStyles}`}>
+                    <GoPaste className='p-2' />
+                </button>
+            </div>
+        )
+    }
+
     // Funkcja zmianu stanu edycji na true oraz ustawiająca odpowiedni index oraz wybrany wydatek, który będzie edytowany
-    function editExpense(i: number, expense: Expense) {        
+    function editExpense(i: number, expense: Expense) {
         setEditedExpenseIndex(i)
         setManageChosenExpense(expense)
     }
 
     function deleteExpense(chosenExpense: Expense) {
-        if (data && chosenDayExpenses) {
-            const filtered = chosenDayExpenses.filter((expense) => expense != chosenExpense)
-            setChosenDayExpenses(filtered)
+        if (data && chosenDayExpensesArray) {
+            const filtered = chosenDayExpensesArray.filter((expense) => expense != chosenExpense)
+            setChosenDayExpensesArray(filtered)
             data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = filtered
             localStorage.setItem("ExpenseTracker", JSON.stringify(data))
         }
     }
 
-    // Funkcja wyświetlająca widok edycji/dodania/utworzenia wydatku
-    function modifyExpenseInputsView() {
+    // Funkcja wyświetlająca widok edycji/dodania wydatku
+    function manageExpenseInputsView() {
         const machingPriceSuggestions = new Set<number>([])
 
         if (productSuggestions.includes(manageChosenExpense.product)) {
@@ -147,7 +198,6 @@ const ChosenYear = () => {
                 })
             })
         }
-
 
         return (
             <>
@@ -200,51 +250,93 @@ const ChosenYear = () => {
         )
     }
 
-    // Funkcja obsługująca edycje istniejącego lub dodanie nowego wydatku 
-    function saveChange(index: number, expenseSources: string[] = chosenDaySources) {
-        if (chosenDayExpenses && data) {
-            const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
-            if (parsedPrice <= 0) {
-                alert("Cena musi być większa niż 0.")
-                return
-            }
-            if (manageChosenExpense.product.length > 3 && !isNaN(parsedPrice)) {
-                const updatedExpense: Expense = {
-                    ...manageChosenExpense,
-                    price: parsedPrice
+    // Modal pokazujący widok edycji danego indeksu
+    function editExpenseView(editingExpenseNum: number) {
+        function handleSaveEditedExpense() {
+            if (chosenDayExpensesArray && data) {
+                const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
+                if (parsedPrice <= 0) {
+                    alert("Cena musi być większa niż 0.")
+                    return
                 }
+                if (manageChosenExpense.product.length > 3 && !isNaN(parsedPrice)) {
+                    const updatedExpense: Expense = {
+                        ...manageChosenExpense,
+                        price: parsedPrice
+                    }
 
-
-                if (editedExpenseIndex == null) {
-                    updatedExpense.source = expenseSources[index]
-                    const newExpenses = [...chosenDayExpenses, updatedExpense]
-                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = newExpenses
-                    setChosenDayExpenses(newExpenses)
-                } else {
-                    chosenDayExpenses[editedExpenseIndex] = updatedExpense
-                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = chosenDayExpenses
-                    setChosenDayExpenses([...chosenDayExpenses])
+                    chosenDayExpensesArray[editingExpenseNum] = updatedExpense
+                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = chosenDayExpensesArray
+                    setChosenDayExpensesArray([...chosenDayExpensesArray])
                 }
-
                 localStorage.setItem("ExpenseTracker", JSON.stringify(data))
                 resetView()
             } else {
                 alert("Wypełnij poprawnie wszystkie pola.")
             }
         }
-    }
 
-    // Modal pokazujący widok edycji danego indeksu
-    function editingView(index: number) {
         return (
             <Modal onClose={resetView}>
                 <span>Wprowadź dane</span>
                 <ul className='flex flex-col gap-9'>
-                    {modifyExpenseInputsView()}
+                    {manageExpenseInputsView()}
                 </ul>
                 <div className='flex items-center gap-2'>
-                    <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => saveChange(index)}>
-                        {editedExpenseIndex == null ? "Dodaj" : "Zapisz"}
+                    <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => handleSaveEditedExpense()}>
+                        Zapisz
+                    </button>
+                    <button className={`${negActBtnStyles}`} onClick={() => resetView()}>
+                        Anuluj
+                    </button>
+                </div>
+            </Modal>
+        );
+    }
+
+    function handleAddNewExpense() {
+        if (chosenDayExpensesArray && data) {
+            const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
+
+            if (parsedPrice <= 0 || isNaN(parsedPrice)) {
+                alert("Cena musi być większa od 0!");
+                return
+            }
+
+            if (manageChosenExpense.product.length <= 3) {
+                alert("Wstaw poprawną nazwę produktu!");
+                return
+            }
+
+            const updatedExpense: Expense = {
+                ...manageChosenExpense,
+                price: parsedPrice,
+                source: chosenDaySources[indexOfNewExpenseSource!],
+            };
+
+            const newExpenses = [...chosenDayExpensesArray!, updatedExpense];
+            data![Number(year)][monthNames.indexOf(String(month))][Number(day)] = newExpenses;
+            setChosenDayExpensesArray(newExpenses);
+
+            localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+            resetView()
+
+        } else {
+            alert("Błąd podczas pobierania danych.")
+        }
+    }
+
+    // Modal pokazujący widok dodania wydatku
+    function addNewExpenseView() {
+        return (
+            <Modal onClose={resetView}>
+                <span>Wprowadź dane</span>
+                <ul className='flex flex-col gap-9'>
+                    {manageExpenseInputsView()}
+                </ul>
+                <div className='flex items-center gap-2'>
+                    <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => handleAddNewExpense()}>
+                        Dodaj
                     </button>
                     <button className={`${negActBtnStyles}`} onClick={() => resetView()}>
                         Anuluj
@@ -266,11 +358,25 @@ const ChosenYear = () => {
                 const updatedSources = Array.from(expenseSources)
 
                 setChosenDaySources(updatedSources)
-                saveChange(updatedSources.indexOf(manageChosenExpense.source), updatedSources)
+                const updatedExpense: Expense = {
+                    ...manageChosenExpense,
+                    price: parsedPrice,
+                    source: manageChosenExpense.source,
+                };
+
+                const newExpenses = [...chosenDayExpensesArray!, updatedExpense];
+                data![Number(year)][monthNames.indexOf(String(month))][Number(day)] = newExpenses;
+
+                setChosenDayExpensesArray(newExpenses);
+                localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                resetView()
+
+                resetView()
             } else {
                 alert("Uzupełnij wszystkie dane")
             }
         }
+
         return (
             <Modal onClose={resetView}>
                 <span>Wprowadź dane</span>
@@ -292,7 +398,7 @@ const ChosenYear = () => {
                             ))}
                         </datalist>
                     </li>
-                    {modifyExpenseInputsView()}
+                    {manageExpenseInputsView()}
                 </ul>
                 <div className='flex items-center gap-5'>
                     <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => handleAddNewSource()}>Dodaj</button>
@@ -302,68 +408,18 @@ const ChosenYear = () => {
         )
     }
 
-    function copyPasteDayExpense() {
-
-        const actionBtnStyles = `text-4xl md:text-5xl rounded-full border-2 border-blue-500 dark:border-purple-800 dark:hover:border-purple-700 dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] hover:bg-gray-100 dark:bg-black text-gray-700 hover:text-black dark:text-gray-400 dark:hover:text-gray-100 ${hoverActiveAnim} transition-colors`
-
-        function pasteDayExpense() {
-            navigator.clipboard.readText().then(pastedData => {
-                setChosenDayExpenses(JSON.parse(pastedData))
-                if (data && JSON.parse(pastedData).length > 0) {
-                    data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
-                    localStorage.setItem("ExpenseTracker", JSON.stringify(data))
-                    alert("Dane zostały zapisane.")
-                }
-            }).catch(err => {
-                console.error('Błąd:', err);
-                alert("Błąd podczas zapisywania danych.")
-            });
-        }
-
-        function copyDayExpense() {
-            let prompt = ""
-            if (chosenDayExpenses && chosenDayExpenses.length > 0) {
-                prompt = "Sugerując się zawartością tych danych dodaj nowe wydatki pochodzące z paragonu w podobny sposób, to znaczy przy dodawaniu nazwy produktu nie kończ słów ani nie dodawaj ilości ani wagi produktu, przy zapisywaniu ceny uwzględnij ewentualne opusty, a przy źródle produktu napisz tylko nazwę sklepu bez pisania ulicy, na której się znajduje. Oto zapisane dane do których masz dopisać nowe wraz z istniejącymi danymi:"
-                navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpenses)).then(() => {
-                    alert('Dane i zapytanie skopiowane do schowka.')
-                }).catch(err => {
-                    alert('Błąd podczas kopiowania.')
-                    console.error('Błąd podczas kopiowania danych: ', err);
-                });
-            } else {
-                prompt = "Z zawartości tego zdjęcia wypisz w formacie json dane wydatków w formacie: {product: <nazwa_produktu>,price:<cena_produktu>,source:<pochodzenie/sklep_w_którym_został_kupiony_produkt>}, w nazwie produktu nie pisz ilości ani wagi zakupionego produktu, przepisz nazwę produktu taką jaka jest na paragonie i nie dokańczaj nazw oraz nie rozwijaj skrótów, jako cene uwzględnij cene po opuście jeśli występuje, jako pochodzenie wydatku napisz tylko nazwę sklepu czyli np: Biedronka, Carrefour lub cokolwiek innego bez pisania dokładnego adresu."
-                navigator.clipboard.writeText(prompt).then(() => {
-                    alert('Zapytanie skopiowane do schowka.')
-                }).catch(err => {
-                    alert('Błąd podczas kopiowania.')
-                    console.error('Błąd podczas kopiowania danych: ', err);
-                });
-            }
-        }
-
-        return (
-            <div className='absolute left-4 bottom-2 flex gap-2'>
-                <button onClick={() => copyDayExpense()} title='Przygotuj zapytanie dla AI' className={`${actionBtnStyles}`}>
-                    <GoCopy className='p-2' />
-                </button>
-                <button onClick={() => pasteDayExpense()} title='Wklej zawartość paragonu wygenerowaną przez ChatGPT' className={`${actionBtnStyles}`}>
-                    <GoPaste className='p-2' />
-                </button>
-            </div>
-        )
-    }
 
     return (
-        <div className={`relative h-dvh flex items-center justify-center md:text-lg text-gray-900 dark:text-gray-400 ${addingExpense && "pointer-events-none"}`}>
-            <ReturnLink disabled={addingExpense || addingNewSource} linkTo={`/${year}/${month}`} />
+        <div className={`relative h-dvh flex items-center justify-center md:text-lg text-gray-900 dark:text-gray-400 ${typeof indexOfNewExpenseSource != 'object' && "pointer-events-none"}`}>
+            <ReturnLink disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} linkTo={`/${year}/${month}`} />
             <div className='max-h-[90vh] flex items-center flex-col gap-6 overflow-y-auto customScroll p-10 overflow-x-hidden'>
-                {chosenDaySources.map((source, index) => {
+                {chosenDaySources.map((source, sourceIndex) => {
                     let totalExpenses = 0
                     return (
-                        <div key={index} className='w-[110%] relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
+                        <div key={sourceIndex} className='w-[110%] relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
                             <span className='mb-2 font-bold'>{source}</span>
                             <ul className='w-full max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
-                                {chosenDayExpenses && chosenDayExpenses.map((expense, i) => {
+                                {chosenDayExpensesArray && chosenDayExpensesArray.map((expense, i) => {
                                     if (expense.source === source) {
                                         totalExpenses += expense.price
                                         return (
@@ -371,10 +427,10 @@ const ChosenYear = () => {
                                                 <span>{expense.product.length > 13 ? expense.product.slice(0, 12) + "..." : expense.product}</span>
                                                 <div className='flex items-center gap-2'>
                                                     <span className='max-md:text-sm whitespace-nowrap'>{expense.price} zł</span>
-                                                    <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500 ${hoverActiveAnim}`} disabled={addingExpense || addingNewSource} onClick={() => editExpense(i, expense)}>
+                                                    <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500 ${hoverActiveAnim}`} disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onClick={() => editExpense(i, expense)}>
                                                         <FaEdit />
                                                     </button>
-                                                    <button className={`text-2xl text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500 ${hoverActiveAnim}`} disabled={addingExpense || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
+                                                    <button className={`text-2xl text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500 ${hoverActiveAnim}`} disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
                                                         <FaTrash />
                                                     </button>
                                                 </div>
@@ -384,9 +440,8 @@ const ChosenYear = () => {
                                 })}
                             </ul>
                             <div className='w-full flex items-center justify-between mt-3 pr-4'>
-                                {editedExpenseIndex && editingView(index)}
                                 <button className={`${posActBtnStyles} py-1.5`}
-                                    disabled={addingExpense || addingNewSource} onClick={() => setAddingExpense(true)}>
+                                    disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onClick={() => setIndexOfNewExpenseSource(sourceIndex)}>
                                     Dodaj wydatek
                                 </button>
                                 <div className='flex items-center flex-col'>
@@ -397,12 +452,14 @@ const ChosenYear = () => {
                         </div>
                     )
                 })}
+                {typeof indexOfNewExpenseSource != 'object' && addNewExpenseView()}
+                {typeof editedExpenseIndex !== 'object' && editExpenseView(editedExpenseIndex)}
                 {addingNewSource && newSourceView()}
-                <button className={`${posActBtnStyles} py-2`} disabled={addingExpense || addingNewSource} onClick={() => setAddingNewSource(true)}>
+                <button className={`${posActBtnStyles} py-2`} disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onClick={() => setAddingNewSource(true)}>
                     Dodaj źródło wydatku
                 </button>
             </div>
-            {copyPasteDayExpense()}
+            {copyPasteDayExpenseView()}
             <ThemeToggle />
         </div>
     )
