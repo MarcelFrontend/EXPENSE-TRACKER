@@ -38,13 +38,22 @@ const ChosenYear = () => {
     const posActBtnStyles = `${actBtnStyles} bg-white dark:bg-black border-blue-500 dark:border-purple-700`
 
     useEffect(() => {
+        console.clear();
+    
         if (!data) {
             fetchData();
         }
-
+    
         if (data && day) {
-            const expenses = data[Number(year)][monthNames.indexOf(String(month))][Number(day)];
-            setChosenDayExpenses(expenses);
+            const monthExpenses = data[Number(year)][monthNames.indexOf(String(month))];
+            let dayExpenses = monthExpenses[Number(day)];
+    
+            if (!monthExpenses.hasOwnProperty(Number(day))) {
+               dayExpenses = []
+                data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = dayExpenses
+            }
+
+            setChosenDayExpenses(dayExpenses);
         }
     }, [data, fetchData, year, month, day]);
 
@@ -107,7 +116,6 @@ const ChosenYear = () => {
     // Funkcja zmianu stanu edycji na true oraz ustawiająca odpowiedni index oraz wybrany wydatek, który będzie edytowany
     function editExpense(i: number, expense: Expense) {
         setEditedExpenseIndex(i)
-        setAddingExpense(true)
         setManageChosenExpense(expense)
     }
 
@@ -205,6 +213,7 @@ const ChosenYear = () => {
                     price: parsedPrice
                 }
 
+
                 if (editedExpenseIndex == null) {
                     updatedExpense.source = expenseSources[index]
                     const newExpenses = [...chosenDayExpenses, updatedExpense]
@@ -216,7 +225,7 @@ const ChosenYear = () => {
                     setChosenDayExpenses([...chosenDayExpenses])
                 }
 
-                localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                // localStorage.setItem("ExpenseTracker", JSON.stringify(data))
                 resetView()
             } else {
                 alert("Wypełnij poprawnie wszystkie pola.")
@@ -250,6 +259,7 @@ const ChosenYear = () => {
             const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
 
             if (manageChosenExpense.source.length > 3 && manageChosenExpense.product.length > 3 && !isNaN(parsedPrice)) {
+
                 const expenseSources = new Set([...chosenDaySources])
                 expenseSources.add(manageChosenExpense.source)
                 const updatedSources = Array.from(expenseSources)
@@ -284,7 +294,7 @@ const ChosenYear = () => {
                     {modifyExpenseInputsView()}
                 </ul>
                 <div className='flex items-center gap-5'>
-                    <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={handleAddNewSource}>Dodaj</button>
+                    <button className={`${posActBtnStyles} text-black dark:text-gray-100 bg-blue-500 dark:bg-purple-700`} onClick={() => handleAddNewSource()}>Dodaj</button>
                     <button className={`${negActBtnStyles}`} onClick={resetView}>Anuluj</button>
                 </div>
             </Modal>
@@ -313,19 +323,21 @@ const ChosenYear = () => {
             let prompt = ""
             if (chosenDayExpenses) {
                 prompt = "Sugerując się zawartością tych danych dodaj nowe wydatki pochodzące z paragonu w podobny sposób, to znaczy przy dodawaniu nazwy produktu nie kończ słów ani nie dodawaj ilości ani wagi produktu, przy zapisywaniu ceny uwzględnij ewentualne opusty, a przy źródle produktu napisz tylko nazwę sklepu bez pisania ulicy, na której się znajduje. Oto zapisane dane do których masz dopisać nowe wraz z istniejącymi danymi:"
+                navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpenses)).then(() => {
+                    alert('Dane i zapytanie skopiowane do schowka.')
+                }).catch(err => {
+                    alert('Błąd podczas kopiowania.')
+                    console.error('Błąd podczas kopiowania danych: ', err);
+                });
             } else {
                 prompt = "Z zawartości tego zdjęcia wypisz w formacie json dane wydatków w formacie: {product: <nazwa_produktu>,price:<cena_produktu>,source:<pochodzenie/sklep_w_którym_został_kupiony_produkt>}, w nazwie produktu nie pisz ilości ani wagi zakupionego produktu, przepisz nazwę produktu taką jaka jest na paragonie i nie dokańczaj nazw oraz nie rozwijaj skrótów, jako cene uwzględnij cene po opuście jeśli występuje, jako pochodzenie wydatku napisz tylko nazwę sklepu czyli np: Biedronka, Carrefour lub cokolwiek innego bez pisania dokładnego adresu."
-            }
-            navigator.clipboard.writeText(prompt + JSON.stringify(chosenDayExpenses)).then(() => {
-                if (chosenDayExpenses) {
-                    alert('Dane i zapytanie skopiowane do schowka.')
-                } else {
+                navigator.clipboard.writeText(prompt).then(() => {
                     alert('Zapytanie skopiowane do schowka.')
-                }
-            }).catch(err => {
-                alert('Błąd podczas kopiowania.')
-                console.error('Błąd podczas kopiowania danych: ', err);
-            });
+                }).catch(err => {
+                    alert('Błąd podczas kopiowania.')
+                    console.error('Błąd podczas kopiowania danych: ', err);
+                });
+            }
         }
 
         return (

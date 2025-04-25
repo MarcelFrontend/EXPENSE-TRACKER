@@ -19,7 +19,7 @@ const ChosenYear = () => {
 
     const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
 
-    const bgStyles = "bg-blue-50 dark:bg-gradient-to-tr dark:from-[rgb(15,15,15)] dark:hover:from-gray-950 dark:to-[rgb(40,0,80)] dark:hover:to-[rgb(45,0,90)]"
+    const bgStyles = "bg-blue-50 dark:bg-gradient-to-tr dark:from-[rgb(15,15,15)] dark:hover:from-gray-800 dark:to-[rgb(40,0,80)] dark:hover:to-[rgb(45,0,90)]"
 
     const shadowStyles = "dark:shadow-[inset_0px_0px_7px_1px_rgb(0,0,0)]"
 
