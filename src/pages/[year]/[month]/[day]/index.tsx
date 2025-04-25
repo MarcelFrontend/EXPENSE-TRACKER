@@ -225,7 +225,7 @@ const ChosenYear = () => {
                     setChosenDayExpenses([...chosenDayExpenses])
                 }
 
-                // localStorage.setItem("ExpenseTracker", JSON.stringify(data))
+                localStorage.setItem("ExpenseTracker", JSON.stringify(data))
                 resetView()
             } else {
                 alert("Wypełnij poprawnie wszystkie pola.")
