@@ -18,11 +18,17 @@ export function copyData(savedData: ExpenseTrackerData) {
 
 export function pasteData() {
     navigator.clipboard.readText().then(value => {
-        localStorage.setItem("ExpenseTracker", value);
-        alert("Dane zostały zapisane.")
+        try {
+            JSON.parse(value)
+            localStorage.setItem("ExpenseTracker", value);
+            alert("Dane zostały zapisane.")
+        } catch (error) {
+            console.error("Błąd:",error);
+            alert("Nieprawidłowy format danych.")
+        }
     }).catch(err => {
         console.error('Błąd podczas zapisywania danych: ', err);
-        alert("Błąd podczas zapisywania danych.")
+        alert("Błąd dostępu do schowka.")
     });
 }
 

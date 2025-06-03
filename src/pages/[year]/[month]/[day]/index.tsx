@@ -32,7 +32,7 @@ const ChosenYear = () => {
     const ulStyles = "flex flex-col gap-2"
     const modifyExpenseLiStyles = "relative"
     const labelStyles = "absolute -top-5 left-1 text-sm text-black dark:text-gray-300"
-    const inputStyles = "text-black dark:text-gray-400 dark:bg-[rgb(10,10,10)] border border-black dark:border-purple-900 rounded-lg p-1"
+    const inputStyles = "text-black dark:text-gray-400 dark:bg-[rgb(10,10,10)] border border-black dark:border-purple-900 rounded-sm p-1"
     const actBtnStyles = `px-5 py-0.5 border-2 rounded-md dark:text-gray-300 ${hoverActiveAnim} `
     const negActBtnStyles = `${actBtnStyles} bg-white dark:bg-black border-black dark:border-gray-400`
     const posActBtnStyles = `${actBtnStyles} bg-white dark:bg-black border-blue-500 dark:border-purple-700`
@@ -58,7 +58,9 @@ const ChosenYear = () => {
     }, [data, fetchData, year, month, day]);
 
     useEffect(() => {
-        // Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
+        /**
+        * Funkcja odpowiadająca za utworzenie listy proponowanych elementów wydatku np nazwa produktu, cena produktów oraz nazwy źródeł wydatków
+        */
         function prepareData() {
             if (chosenDayExpensesArray && data) {
                 const expenseSources = new Set<string>()
@@ -95,7 +97,9 @@ const ChosenYear = () => {
         prepareData()
     }, [chosenDayExpensesArray, data]);
 
-    // Funkcja obsługująca zmiane stanu w konkretnym elemencie np product, price lub source
+    /**
+    * Funkcja obsługująca zmiane stanu w konkretnym elemencie np product, price lub source
+    */
     function saveExpenseState(field: keyof Expense, value: string | number) {
         if (field == "price" && typeof value == 'number' && isNaN(value)) {
             value = ""
@@ -123,7 +127,6 @@ const ChosenYear = () => {
                 if (data && JSON.parse(pastedData).length > 0) {
                     data[Number(year)][monthNames.indexOf(String(month))][Number(day)] = JSON.parse(pastedData)
                     localStorage.setItem("ExpenseTracker", JSON.stringify(data))
-                    alert("Dane zostały zapisane.")
                 }
             }).catch(err => {
                 console.error('Błąd:', err);
@@ -164,7 +167,12 @@ const ChosenYear = () => {
         )
     }
 
-    // Funkcja zmianu stanu edycji na true oraz ustawiająca odpowiedni index oraz wybrany wydatek, który będzie edytowany
+
+    /**
+    * Funkcja zmiany stanu edycji na true, ustawiająca index edytowanego wydatku w setEditedExpenseIndex oraz wybrany wydatek setManageChosenExpense, który będzie edytowany
+    * @param i 
+    * @param expense
+    */
     function editExpense(i: number, expense: Expense) {
         setEditedExpenseIndex(i)
         setManageChosenExpense(expense)
@@ -179,7 +187,9 @@ const ChosenYear = () => {
         }
     }
 
-    // Funkcja wyświetlająca widok edycji/dodania wydatku
+    /**
+    * Funkcja wyświetlająca widok edycji/dodania wydatku
+    */
     function manageExpenseInputsView() {
         const machingPriceSuggestions = new Set<number>([])
 
@@ -250,7 +260,10 @@ const ChosenYear = () => {
         )
     }
 
-    // Modal pokazujący widok edycji danego indeksu
+    /**
+    * Modal pokazujący widok edycji danego indeksu 
+    * @param editingExpenseNum  
+    */
     function editExpenseView(editingExpenseNum: number) {
         function handleSaveEditedExpense() {
             if (chosenDayExpensesArray && data) {
@@ -326,7 +339,9 @@ const ChosenYear = () => {
         }
     }
 
-    // Modal pokazujący widok dodania wydatku
+    /**
+     * Modal pokazujący widok dodania wydatku
+     */
     function addNewExpenseView() {
         return (
             <Modal onClose={resetView}>
@@ -346,7 +361,9 @@ const ChosenYear = () => {
         );
     }
 
-    // Funkcja obsługująca wyświetlenie i dodanie nowego źródła wydatku
+    /**
+     * Funkcja obsługująca wyświetlenie i dodanie nowego źródła wydatku
+     */
     function newSourceView() {
         function handleAddNewSource() {
             const parsedPrice = parseFloat(String(manageChosenExpense.price).replace(',', '.'))
@@ -408,6 +425,30 @@ const ChosenYear = () => {
         )
     }
 
+    interface ExpenseItemPropsTypes {
+        expense: Expense,
+        index: number,
+        editExpense: (i: number, expense: Expense) => void,
+        deleteExpense: (chosenExpense: Expense) => void,
+        isDisabled: boolean
+    }
+
+    function ExpenseItem({ expense, index, editExpense, deleteExpense, isDisabled }: ExpenseItemPropsTypes) {
+        return (
+            <li className={`w-full relative flex items-center justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1.5 px-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75`}>
+                <span>{expense.product.length > 13 ? expense.product.slice(0, 12) + "..." : expense.product}</span>
+                <div className='flex items-center gap-2'>
+                    <span className='max-md:text-sm whitespace-nowrap'>{expense.price} zł</span>
+                    <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500`} disabled={isDisabled} onClick={() => editExpense(index, expense)}>
+                        <FaEdit />
+                    </button>
+                    <button className={`text-2xl text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500`} disabled={isDisabled} onDoubleClick={() => deleteExpense(expense)}>
+                        <FaTrash />
+                    </button>
+                </div>
+            </li>
+        );
+    };
 
     return (
         <div className={`relative h-dvh flex items-center justify-center md:text-lg text-gray-900 dark:text-gray-400 ${typeof indexOfNewExpenseSource != 'object' && "pointer-events-none"}`}>
@@ -416,28 +457,25 @@ const ChosenYear = () => {
                 {chosenDaySources.map((source, sourceIndex) => {
                     let totalExpenses = 0
                     return (
-                        <div key={sourceIndex} className='w-[110%] relative flex items-center flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
+                        <div key={sourceIndex} className='max-lg:w-[110%] relative flex flex-col pl-4 pr-1 py-3 bg-white dark:bg-[rgb(0,0,0)] border-2 border-blue-400 dark:border-purple-900 rounded-xl shadow-[0px_2px_5px_1px_rgb(200,200,200)] dark:shadow-[inset_0px_0px_10px_5px_rgb(20,0,40)]'>
                             <span className='mb-2 font-bold'>{source}</span>
-                            <ul className='w-full max-h-96 flex flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
+                            <ul className='w-full max-h-96 flex items-center flex-col gap-4 overflow-y-auto customScroll px-1 pr-3 md:px-3 md:pr-5 pb-1'>
                                 {chosenDayExpensesArray && chosenDayExpensesArray.map((expense, i) => {
                                     if (expense.source === source) {
-                                        totalExpenses += expense.price
+                                        totalExpenses += expense.price;
                                         return (
-                                            <li key={i} className={`w-full relative flex items-center justify-between gap-2 dark:bg-[rgb(0,0,0)] py-1.5 px-2 max-md:text-sm rounded-lg border-2 border-blue-300 dark:border-purple-950 shadow-md dark:shadow-purple-950/75`}>
-                                                <span>{expense.product.length > 13 ? expense.product.slice(0, 12) + "..." : expense.product}</span>
-                                                <div className='flex items-center gap-2'>
-                                                    <span className='max-md:text-sm whitespace-nowrap'>{expense.price} zł</span>
-                                                    <button className={`text-2xl text-blue-400 dark:text-blue-600 hover:text-blue-600 dark:hover:text-blue-500 ${hoverActiveAnim}`} disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onClick={() => editExpense(i, expense)}>
-                                                        <FaEdit />
-                                                    </button>
-                                                    <button className={`text-2xl text-red-500 dark:text-red-700 hover:text-red-600 dark:hover:text-red-500 ${hoverActiveAnim}`} disabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource} onDoubleClick={() => deleteExpense(expense)}>
-                                                        <FaTrash />
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        )
+                                            <ExpenseItem
+                                                key={i}
+                                                expense={expense}
+                                                index={i}
+                                                editExpense={editExpense}
+                                                deleteExpense={deleteExpense}
+                                                isDisabled={typeof indexOfNewExpenseSource != 'object' || addingNewSource}
+                                            />
+                                        );
                                     }
                                 })}
+
                             </ul>
                             <div className='w-full flex items-center justify-between mt-3 pr-4'>
                                 <button className={`${posActBtnStyles} py-1.5`}

@@ -14,7 +14,7 @@ export default function Index() {
   const todayDateLink = `${date.getFullYear()}/${monthNames[date.getMonth()]}/${date.getDate()}`
 
   const hoverActiveAnim = "hover:scale-105 active:scale-95 transition-all"
-  const mainStyles = "rounded-full bg-white dark:bg-black border-2 border-blue-500 dark:border-purple-900 dark:hover:border-purple-700 shadow-[0px_0px_6px_1px_rgb(190,190,250)] dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] dark:hover:shadow-[inset_0px_0px_5px_2px_rgb(90,50,120)] dark:hover:text-gray-300"
+  const btnStyles = "rounded-full bg-white dark:bg-black border-2 border-blue-500 dark:border-purple-900 dark:hover:border-purple-700 shadow-[0px_0px_6px_1px_rgb(190,190,250)] dark:shadow-[inset_0px_0px_5px_2px_rgb(50,10,70)] dark:hover:shadow-[inset_0px_0px_5px_2px_rgb(90,50,120)] dark:hover:text-gray-300"
 
   useEffect(() => {
     if (!data) {
@@ -53,23 +53,38 @@ export default function Index() {
     };
 
     localStorage.setItem("ExpenseTracker", JSON.stringify(updatedData));
+    fetchData()
   }
+
+  // Dodanie amount do produktu?
 
   return (
     <div className="relative h-dvh flex items-center justify-center text-black dark:text-gray-400">
-      <div className="relative flex items-center flex-col gap-7">
-        <ul className="grid grid-cols-3 gap-3">
-          {data && Object.entries(data).map(([year]) => (
-            <Link href={`/${year}`} className={`py-2 px-8 md:text-2xl ${mainStyles} ${hoverActiveAnim}`} key={year}>
-              {year}
-            </Link>
-          ))}
-        </ul>
-        <button onClick={addNewYear} className={`${hoverActiveAnim} ${mainStyles}`}>
-          <GoPlus className="size-12 md:size-14" />
-        </button>
+      <div className="relative flex items-center flex-col gap-3">
+        <div className='flex flex-col items-center gap-7'>
+          <ul className="grid grid-cols-3 gap-3">
+            {data && Object.entries(data).map(([year]) => (
+              <Link href={`/${year}`} className={`py-2 px-8 md:text-2xl ${btnStyles} ${hoverActiveAnim}`} key={year}>
+                {year}
+              </Link>
+            ))}
+          </ul>
+          <button onClick={addNewYear} className={`${hoverActiveAnim} ${btnStyles}`}>
+            <GoPlus className="size-12 md:size-14" />
+          </button>
+        </div>
+        <div className='flex gap-3'>
+          <Link href={"/search"} className={`px-6 py-2 ${btnStyles}`}>
+            Znajdź produkt
+          </Link>
+          <Link href={"/predict"} className={`px-6 py-2 ${btnStyles}`}>
+            Przewidywanie kosztów
+          </Link>
+        </div>
         {currentYearDataExists &&
-          <Link href={todayDateLink} className={`absolute -bottom-20 text-xl lg:text-4xl text-blue-700 dark:text-purple-500 ${hoverActiveAnim}`}>Przejdź do dzisiaj</Link>
+          <Link href={todayDateLink} className={`absolute -bottom-20 text-xl lg:text-4xl text-blue-700 dark:text-purple-500 ${hoverActiveAnim}`}>
+            Przejdź do dzisiaj
+          </Link>
         }
       </div>
       <CopyPaste />
