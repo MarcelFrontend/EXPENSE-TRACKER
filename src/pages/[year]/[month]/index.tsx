@@ -6,7 +6,6 @@ import { DailyExpenses, Expense } from '@/types/types'
 import { monthNames } from '@/utils/utils'
 import Link from 'next/link'
 import ReturnLink from '@/components/ReturnLink'
-import ThemeToggle from '@/components/ThemeToogle'
 
 const ChosenYear = () => {
     const { data, fetchData } = useData()
@@ -99,7 +98,6 @@ const ChosenYear = () => {
                     }
                 </ul>
             )}
-            <ThemeToggle />
         </div>
     )
 }
