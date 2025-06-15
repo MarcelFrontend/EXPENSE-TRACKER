@@ -19,7 +19,7 @@ export function copyData(savedData: ExpenseTrackerData) {
 export function pasteData() {
     navigator.clipboard.readText().then(value => {
         try {
-            JSON.parse(value)
+            console.log(value);
             localStorage.setItem("ExpenseTracker", value);
             alert("Dane zostały zapisane.")
         } catch (error) {

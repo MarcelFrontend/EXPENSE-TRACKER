@@ -11,7 +11,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className={`flex items-center justify-center gap-2 border-2 p-2.5 md:px-2 rounded-full hover:bg-gray-50 hover:dark:bg-gray-950 border-black dark:border-gray-700 dark:shadow-[0px_0px_10px_1px_rgb(0,0,0)] ${hoverActiveAnim} duration-300`}
+      className={`flex items-center justify-center gap-2 border-2 p-2.5 md:px-2 rounded-full hover:bg-gray-50 hover:dark:bg-gray-950 border-black dark:border-gray-700 dark:shadow-[0px_0px_10px_1px_rgb(0,0,0)] ${hoverActiveAnim} group duration-300`}
       title="Zmień motyw"
     >
       {currentTheme === 'dark' ? (
@@ -19,7 +19,7 @@ const ThemeToggle = () => {
       ) : (
         <GoMoon className="h-8 w-auto text-blue-700 hover:text-blue-800 transition-colors duration-300" />
       )}
-      <span className='hidden md:block'>
+      <span className='text-gray-700 group-hover:text-black dark:text-gray-400 dark:group-hover:text-gray-100'>
         {theme == 'dark' ? 'Jasny ' : 'Ciemny '}
         motyw
       </span>

@@ -6,7 +6,6 @@ import { useData } from '@/context/DataProvider'
 import { Expense, DailyExpenses, MonthlyExpenses, ExpenseTrackerData } from '@/types/types'
 import { monthNames } from '@/utils/utils'
 import ReturnLink from '@/components/ReturnLink'
-import ThemeToggle from '@/components/ThemeToogle';
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { GoCopy, GoPaste } from 'react-icons/go';
 
@@ -498,7 +497,6 @@ const ChosenYear = () => {
                 </button>
             </div>
             {copyPasteDayExpenseView()}
-            <ThemeToggle />
         </div>
     )
 }

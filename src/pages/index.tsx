@@ -1,4 +1,5 @@
 import { GoPlus } from 'react-icons/go'
+import { FaSearch, FaShoppingBag } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useData } from "@/context/DataProvider";
@@ -56,8 +57,8 @@ export default function Index() {
 
   // Dodanie amount do produktu?
   return (
-    <div className="relative h-dvh flex items-center justify-center text-black dark:text-gray-400">
-      <div className="relative flex items-center flex-col gap-3">
+    <div className="relative h-dvh flex items-center justify-between flex-col text-black dark:text-gray-400">
+      <main className="h-full relative flex items-center justify-center flex-col gap-7 md:gap-5">
         <div className='flex flex-col items-center gap-7'>
           <ul className="grid grid-cols-3 gap-3">
             {data && Object.entries(data).map(([year]) => (
@@ -66,24 +67,33 @@ export default function Index() {
               </Link>
             ))}
           </ul>
-          <button onClick={addNewYear} className={`${hoverActiveAnim} ${btnStyles}`}>
+          <button onClick={addNewYear} className={`hidden md:block ${hoverActiveAnim} ${btnStyles}`}>
             <GoPlus className="size-12 md:size-14" />
           </button>
         </div>
-        <div className='flex gap-3'>
-          <Link href={"/search"} className={`px-6 py-2 ${btnStyles}`}>
-            Znajdź produkt
-          </Link>
-          <Link href={"/predict"} className={`px-6 py-2 ${btnStyles}`}>
-            Przewidywanie kosztów
-          </Link>
-        </div>
         {currentYearDataExists &&
-          <Link href={todayDateLink} className={`absolute -bottom-20 text-xl lg:text-4xl text-blue-700 dark:text-purple-500 ${hoverActiveAnim}`}>
+          <Link href={todayDateLink} className={`text-xl lg:text-2xl text-blue-700 dark:text-purple-500 ${hoverActiveAnim}`}>
             Przejdź do dzisiaj
           </Link>
         }
-      </div>
+      </main>
+      <footer className='relative h-16 w-full flex gap-10 dark:text-black dark:bg-purple-700 rounded-t'>
+        <Link href={"/search"} className={`flex justify-center flex-1 px-3 md:px-6 py-3 md:py-2 text-center rounded-full`}>
+          <FaSearch className='text-4xl' />
+          <span className='hidden md:block'>
+            Znajdź produkt
+          </span>
+        </Link>
+        <button onClick={addNewYear} className={`absolute left-1/2 -translate-x-1/2 bottom-6 md:hidden dark:text-white ${hoverActiveAnim} ${btnStyles}`}>
+          <GoPlus className="size-16 md:size-14" />
+        </button>
+        <Link href={"/predict"} className={`flex justify-center flex-1 px-3 md:px-6 py-3 md:py-2 text-center rounded-full`}>
+          <FaShoppingBag className='text-4xl' />
+          <span className='hidden md:block'>
+            Przewidywanie kosztów
+          </span>
+        </Link>
+      </footer>
     </div>
   )
 }

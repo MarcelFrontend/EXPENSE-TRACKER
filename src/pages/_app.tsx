@@ -9,8 +9,8 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class">
       <DataProvider>
-        <Component {...pageProps} />
         <Settings />
+        <Component {...pageProps} />
       </DataProvider>
     </ThemeProvider>
   )
